@@ -18,21 +18,14 @@ instanzio oggetto della classe Data
 Data data = new Data();
 ```
 
-Leggi le informazioni sulla RAM, ROM e CPU dal PC locale
+Leggi le informazioni sulla RAM, ROM e CPU dal PC locale e stampa in automatico
 
 ```C#
-string ramInfo = data.GetRamInfo();
-string romInfo = data.GetRomInfo();
-string cpuInfo = data.GetCpuInfo();
+Console.WriteLine(data.GetRamInfo());
+Console.WriteLine(data.GetRomInfo());
+Console.WriteLine(data.GetCpuInfo());
 ```
 
-Stampare le informazioni sulla console
-
-```c#
-Console.WriteLine(ramInfo);
-Console.WriteLine(romInfo);
-Console.WriteLine(cpuInfo);
-```
 
 implementazione Classe Data con gli using e namespace
 
