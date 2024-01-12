@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "RMR0XC1OQZoZkfy6VRe2KJnvH+YXXj+Mk/Mv6eHzFRj53ql0P06ccMTZ2IvnlURs5opg+NR1uBMpfUowwXx+tw==",
+  "success": true,
+  "projectFilePath": "D:\\Corso ITS IIOT\\2 anno\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nicol\\.nuget\\packages\\system.codedom\\8.0.0\\system.codedom.8.0.0.nupkg.sha512",
+    "C:\\Users\\nicol\\.nuget\\packages\\system.management\\8.0.0\\system.management.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
