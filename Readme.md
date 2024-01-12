@@ -143,3 +143,17 @@ public string GetCpuInfo()
     }
 }
 ```
+
+## ora lo si bilda sul Raspberry
+
+mi coonnettoo via ssh 
+
+```bash
+sshnome@inidrizzo_ip
+
+sudo service ssh status #vedi se ssh è attivo
+sudo service ssh start #attivi ssh
+scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti file 
+
+chmod +x nome_file #il file diventa eseuigibile
+```
