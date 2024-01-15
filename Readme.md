@@ -150,3 +150,15 @@ scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #spos
 
 chmod +x nome_file #il file diventa eseuigibile
 ```
+
+## Scarico dotnet passando via scp e lo scarico
+
+```bash
+curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel STS #scarico dotnet nel raspberry
+
+echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc
+echo 'export PATH=$PATH:$HOME/.dotnet' >> ~/.bashrc
+source ~/.bashrc
+
+dotnet --version
+```
