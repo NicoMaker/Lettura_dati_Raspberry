@@ -6,10 +6,11 @@ prima parte di configurazione degli using
 
 ![scaricamneto Nuget](Scaricamento_nuget.png)
 
-intanta parte di configurazione degli using
+intanta parte di configurazione degli using e namespace
 
 ```C#
-using lettura_dati_Raspberry;
+using System;
+namespace lettura_dati_Raspberry;
 ```
 
 instanzio oggetto della classe Data
@@ -21,9 +22,23 @@ Data data = new Data();
 Leggi le informazioni sulla RAM, ROM e CPU dal PC locale e stampa in automatico
 
 ```C#
-Console.WriteLine(data.GetRamInfo());
-Console.WriteLine(data.GetRomInfo());
-Console.WriteLine(data.GetCpuInfo());
+class Program
+{
+    static void Main(string[] args)
+    {
+        Data data = new Data();
+
+        // Stampare informazioni sulla RAM, ROM e CPU
+        Console.WriteLine("Informazioni sulla RAM:");
+        Console.WriteLine(data.GetRamInfo());
+
+        Console.WriteLine("\nInformazioni sulla ROM:");
+        Console.WriteLine(data.GetRomInfo());
+
+        Console.WriteLine("\nInformazioni sulla CPU:");
+        Console.WriteLine(data.GetCpuInfo());
+    }
+}
 ```
 
 
@@ -161,4 +176,7 @@ echo 'export PATH=$PATH:$HOME/.dotnet' >> ~/.bashrc
 source ~/.bashrc
 
 dotnet --version
+
+chmod +x nomefile #do opzione di esecuzione al file
+dotnet run #esegue il codice dotnet 
 ```
