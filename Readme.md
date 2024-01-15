@@ -2,11 +2,13 @@
 
 prima parte di configurazione degli using
 
-- Management
+- Management 
 
 ![scaricamneto Nuget](Scaricamento_nuget.png)
 
-intanta parte di configurazione degli using e namespace
+
+intanto parte di configurazione degli using e namespace
+
 
 ```C#
 using System;
@@ -41,11 +43,10 @@ class Program
 }
 ```
 
-
 implementazione Classe Data con gli using e namespace
 
 ```C#
-using System.Management;
+using System.Diagnostics;
 namespace lettura_dati_Raspberry;
 ```
 
@@ -65,7 +66,7 @@ dentro la classe Data creo i vari metodi
 ```C#
 public string GetRamInfo()
 {
-    var processStartInfo = new System.Diagnostics.ProcessStartInfo
+    var processStartInfo = new ProcessStartInfo
     {
         FileName = "free",
         RedirectStandardOutput = true,
@@ -73,13 +74,11 @@ public string GetRamInfo()
         CreateNoWindow = true
     };
 
-    using (var process = System.Diagnostics.Process.Start(processStartInfo))
+    using (var process = Process.Start(processStartInfo))
     {
         using (var reader = process.StandardOutput)
         {
             string output = reader.ReadToEnd();
-
-            // Estrai informazioni sulla RAM libera, usata e totale
             string[] lines = output.Split('\n');
             string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -98,7 +97,7 @@ public string GetRamInfo()
 ```C#
 public string GetRomInfo()
 {
-    var processStartInfo = new System.Diagnostics.ProcessStartInfo
+    var processStartInfo = new ProcessStartInfo
     {
         FileName = "df",
         Arguments = "-h /",
@@ -107,13 +106,11 @@ public string GetRomInfo()
         CreateNoWindow = true
     };
 
-    using (var process = System.Diagnostics.Process.Start(processStartInfo))
+    using (var process = Process.Start(processStartInfo))
     {
         using (var reader = process.StandardOutput)
         {
             string output = reader.ReadToEnd();
-
-            // Estrai informazioni sulla ROM libera, usata e totale
             string[] lines = output.Split('\n');
             string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -132,7 +129,7 @@ public string GetRomInfo()
 ```C#
 public string GetCpuInfo()
 {
-    var processStartInfo = new System.Diagnostics.ProcessStartInfo
+    var processStartInfo = new ProcessStartInfo
     {
         FileName = "cat",
         Arguments = "/proc/cpuinfo",
@@ -141,7 +138,7 @@ public string GetCpuInfo()
         CreateNoWindow = true
     };
 
-    using (var process = System.Diagnostics.Process.Start(processStartInfo))
+    using (var process = Process.Start(processStartInfo))
     {
         using (var reader = process.StandardOutput)
         {
@@ -154,7 +151,7 @@ public string GetCpuInfo()
 
 ## ora lo si bilda sul Raspberry
 
-mi coonnettoo via ssh 
+mi coonnettoo via ssh
 
 ```bash
 sshnome@inidrizzo_ip
@@ -166,7 +163,10 @@ sudo service ssh start #attivi ssh
 ## Scarico dotnet passando via scp e lo scarico
 
 ```bash
-scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti file 
+sudo rm -r nomecartella #elimini cartella
+rm nomefile #elimini file 
+
+scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti file
 scp -r C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti carte
 
 curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel STS #scarico dotnet nel raspberry
@@ -178,5 +178,5 @@ source ~/.bashrc
 dotnet --version
 
 chmod +x nomefile #do opzione di esecuzione al file
-dotnet run #esegue il codice dotnet 
+dotnet run #esegue il codice dotnet
 ```
