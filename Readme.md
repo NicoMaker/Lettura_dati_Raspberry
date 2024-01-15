@@ -161,15 +161,14 @@ sshnome@inidrizzo_ip
 
 sudo service ssh status #vedi se ssh è attivo
 sudo service ssh start #attivi ssh
-scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti file 
-scp -r C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti cartella
-
-chmod +x nome_file #il file diventa eseuigibile
 ```
 
 ## Scarico dotnet passando via scp e lo scarico
 
 ```bash
+scp C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti file 
+scp -r C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #sposti carte
+
 curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel STS #scarico dotnet nel raspberry
 
 echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc
