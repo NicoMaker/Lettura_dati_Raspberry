@@ -47,6 +47,7 @@ implementazione Classe Data con gli using e namespace
 
 ```C#
 using System.Diagnostics;
+using System.Globalizzazion;
 namespace lettura_dati_Raspberry;
 ```
 
@@ -137,11 +138,15 @@ public string GetRomInfo()
 
                     if (values.Length >= 6)
                     {
-                        ulong totalRom = ulong.Parse(values[1]);
-                        ulong usedRom = ulong.Parse(values[2]);
-                        ulong freeRom = ulong.Parse(values[3]);
+                        string totalRomStr = values[1].TrimEnd('G');
+                        string usedRomStr = values[2].TrimEnd('G');
+                        string freeRomStr = values[3].TrimEnd('G');
 
-                        return $"ROM Used: {usedRom / (1024 * 1024 * 1024)} GB, ROM Free: {freeRom / (1024 * 1024 * 1024)} GB, ROM Total: {totalRom / (1024 * 1024 * 1024)} GB";
+                        double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
+                        double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
+                        double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
+
+                        return $"ROM Used: {usedRom / (1024 * 1024)} GB, ROM Free: {freeRom / (1024 * 1024)} GB, ROM Total: {totalRom / (1024 * 1024)} GB";
                     }
                 }
             }
