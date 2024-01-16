@@ -94,7 +94,11 @@ public string GetRamInfo()
                         ulong usedRam = ulong.Parse(values[2]);
                         ulong freeRam = ulong.Parse(values[3]);
 
-                        return $"RAM Used: {usedRam / (1024 * 1024)} GB, RAM Free: {freeRam / (1024 * 1024)} GB, RAM Total: {totalRam / (1024 * 1024)} GB";
+                        // Converti almeno uno dei valori in double per ottenere risultati decimali
+                        double usedRamPercentage = (double)usedRam / totalRam * 100;
+                        double freeRamPercentage = (double)freeRam / totalRam * 100;
+
+                        return $"RAM Used: {usedRamPercentage:F2}%, RAM Free: {freeRamPercentage:F2}%, RAM Total: {totalRam} MB";
                     }
                 }
             }
@@ -142,11 +146,11 @@ public string GetRomInfo()
                         string usedRomStr = values[2].TrimEnd('G');
                         string freeRomStr = values[3].TrimEnd('G');
 
-                        double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
-                        double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
-                        double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture) * 1024; // Convert GB to MB
+                        double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                        double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                        double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
 
-                        return $"ROM Used: {usedRom / (1024 * 1024)} GB, ROM Free: {freeRom / (1024 * 1024)} GB, ROM Total: {totalRom / (1024 * 1024)} GB";
+                        return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom / (1024 * 1024)} MB";
                     }
                 }
             }
