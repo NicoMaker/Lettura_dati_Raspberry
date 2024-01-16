@@ -5,77 +5,118 @@ class Data
 {
     public string GetRamInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "free",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
-                string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                FileName = "free",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                ulong totalRam = ulong.Parse(values[1]);
-                ulong usedRam = ulong.Parse(values[2]);
-                ulong freeRam = ulong.Parse(values[3]);
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    string[] lines = output.Split('\n');
 
-                return $"RAM Used: {usedRam / (1024 * 1024)} MB, RAM Free: {freeRam / (1024 * 1024)} MB, RAM Total: {totalRam / (1024 * 1024)} MB";
+                    if (lines.Length >= 2)
+                    {
+                        string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (values.Length >= 4)
+                        {
+                            ulong totalRam = ulong.Parse(values[1]);
+                            ulong usedRam = ulong.Parse(values[2]);
+                            ulong freeRam = ulong.Parse(values[3]);
+
+                            return $"RAM Used: {usedRam / (1024 * 1024)} GB, RAM Free: {freeRam / (1024 * 1024)} GB, RAM Total: {totalRam / (1024 * 1024)} GB";
+                        }
+                    }
+                }
             }
+
+            return "Failed to retrieve RAM information";
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
         }
     }
 
+
     public string GetRomInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "df",
-            Arguments = "-h /",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
-                string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                FileName = "df",
+                Arguments = "-h /",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                ulong totalRom = ulong.Parse(values[1]);
-                ulong usedRom = ulong.Parse(values[2]);
-                ulong freeRom = ulong.Parse(values[3]);
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    string[] lines = output.Split('\n');
 
-                return $"ROM Used: {usedRom / (1024 * 1024 * 1024)} GB, ROM Free: {freeRom / (1024 * 1024 * 1024)} GB, ROM Total: {totalRom / (1024 * 1024 * 1024)} GB";
+                    if (lines.Length >= 2)
+                    {
+                        string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (values.Length >= 6)
+                        {
+                            ulong totalRom = ulong.Parse(values[1]);
+                            ulong usedRom = ulong.Parse(values[2]);
+                            ulong freeRom = ulong.Parse(values[3]);
+
+                            return $"ROM Used: {usedRom / (1024 * 1024 * 1024)} GB, ROM Free: {freeRom / (1024 * 1024 * 1024)} GB, ROM Total: {totalRom / (1024 * 1024 * 1024)} GB";
+                        }
+                    }
+                }
             }
+
+            return "Failed to retrieve ROM information";
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
         }
     }
 
     public string GetCpuInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "cat",
-            Arguments = "/proc/cpuinfo",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                return $"CPU Info:\n{output}";
+                FileName = "cat",
+                Arguments = "/proc/cpuinfo",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    return $"CPU Info:\n{output}";
+                }
             }
         }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
+
 }
