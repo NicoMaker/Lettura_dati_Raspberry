@@ -241,3 +241,92 @@ dotnet run #esegue il codice dotnet
 
 ![lettura dati Raspberry](Lettura_dati1.png)
 ![lettura dati Raspberry](Lettura_dati2.png)
+
+
+# Dati con MQTT
+
+## Implementami la funzionalità per usare MQ>TT nel Raspberry
+
+```bash
+dotnet add package MQTTnet
+```
+
+Implementazione degli using e Namespace della classe Data
+
+```bash
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
+using System.Threading.Tasks;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Client.Options;
+
+namespace lettura_dati_Raspberry;
+```
+
+Creo diversi metodi dentro la classe Data
+
+- PublishMqttMessageAsync -> per publiccare i vari valori della RAM ROM e CPU
+
+```C#
+ private async Task PublishMqttMessageAsync(string topic, string payload)
+{
+    try
+    {
+        var factory = new MqttFactory();
+        var mqttClient = factory.CreateMqttClient();
+
+        var options = new MqttClientOptionsBuilder()
+            .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
+            .WithClientId("your-client-id") // Replace with your desired client ID
+            .Build();
+
+        await mqttClient.ConnectAsync(options);
+
+        var message = new MqttApplicationMessageBuilder()
+            .WithTopic(topic)
+            .WithPayload(payload)
+            .Build();
+
+        await mqttClient.PublishAsync(message);
+
+        await mqttClient.DisconnectAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error publishing MQTT message: {ex.Message}");
+    }
+}
+```
+
+- PublishRamInfoMqttAsyn -> publica i dati della RAM
+
+```C#
+public async Task PublishRamInfoMqttAsync()
+{
+    string ramInfo = GetRamInfo();
+    await PublishMqttMessageAsync("ram_info_topic", ramInfo);
+}
+```
+
+- PublishRomInfoMqttAsync -> publica i dati della ROM
+
+```C#
+public async Task PublishRomInfoMqttAsync()
+{
+    string romInfo = GetRomInfo();
+    await PublishMqttMessageAsync("rom_info_topic", romInfo);
+}
+```
+
+- PublishCpuInfoMqttAsyn -> publica i dati della CPU
+
+```C#
+public async Task PublishCpuInfoMqttAsync()
+{
+    string cpuInfo = GetCpuInfo();
+    await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
+}
+```

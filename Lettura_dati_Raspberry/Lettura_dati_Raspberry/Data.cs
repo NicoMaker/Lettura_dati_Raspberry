@@ -1,5 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.Text;
+using System.Threading.Tasks;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Client.Options;
+
 namespace lettura_dati_Raspberry;
 
 class Data
@@ -129,6 +136,53 @@ class Data
         {
             return $"Error: {ex.Message}";
         }
+    }
+
+    private async Task PublishMqttMessageAsync(string topic, string payload)
+    {
+        try
+        {
+            var factory = new MqttFactory();
+            var mqttClient = factory.CreateMqttClient();
+
+            var options = new MqttClientOptionsBuilder()
+                .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
+                .WithClientId("your-client-id") // Replace with your desired client ID
+                .Build();
+
+            await mqttClient.ConnectAsync(options);
+
+            var message = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(payload)
+                .Build();
+
+            await mqttClient.PublishAsync(message);
+
+            await mqttClient.DisconnectAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error publishing MQTT message: {ex.Message}");
+        }
+    }
+
+    public async Task PublishRamInfoMqttAsync()
+    {
+        string ramInfo = GetRamInfo();
+        await PublishMqttMessageAsync("ram_info_topic", ramInfo);
+    }
+
+    public async Task PublishRomInfoMqttAsync()
+    {
+        string romInfo = GetRomInfo();
+        await PublishMqttMessageAsync("rom_info_topic", romInfo);
+    }
+
+    public async Task PublishCpuInfoMqttAsync()
+    {
+        string cpuInfo = GetCpuInfo();
+        await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
     }
 
 }
