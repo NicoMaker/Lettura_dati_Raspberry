@@ -243,11 +243,11 @@ dotnet run #esegue il codice dotnet
 ![lettura dati Raspberry](Lettura_dati2.png)
 
 
-# Dati con MQTT
+# Dati con il Protocollo MQTT
 
 ## Implementami la funzionalità per usare MQTT nel Raspberry
 
-aggiungi pacchetti MQTTnet
+aggiungi pacchetti per l'uso del Protocollo MQTTnet
 
 ```bash
 dotnet add package MQTTnet
