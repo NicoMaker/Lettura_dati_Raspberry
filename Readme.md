@@ -15,19 +15,14 @@ using System;
 namespace lettura_dati_Raspberry;
 ```
 
-instanzio oggetto della classe Data
-
-```C#
-Data data = new Data();
-```
-
-Leggi le informazioni sulla RAM, ROM e CPU dal PC locale e stampa in automatico
+Leggi le informazioni sulla RAM, ROM e CPU dal PC locale e stampa in automatico anche l'stanza della clsee Data
 
 ```C#
 class Program
 {
     static void Main(string[] args)
     {
+        // instanzio oggetto della classe Data
         Data data = new Data();
 
         // Stampare informazioni sulla RAM, ROM e CPU
