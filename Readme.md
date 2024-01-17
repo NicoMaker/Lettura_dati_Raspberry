@@ -245,10 +245,27 @@ dotnet run #esegue il codice dotnet
 
 # Dati con MQTT
 
-## Implementami la funzionalità per usare MQ>TT nel Raspberry
+## Implementami la funzionalità per usare MQTT nel Raspberry
+
+aggiungi pacchetti MQTTnet
 
 ```bash
 dotnet add package MQTTnet
+```
+
+Nel file csproj aggiungi questa configurazione
+```bash
+nano Lettura_dati_Raspberry.csproj #modifici file e aggiungi la riga che segue
+```
+```xml
+ <ItemGroup> 
+    <PackageReference Include="MQTTnet" Version="3.0.0" /><!-- qui includo il pacchetto MQTTnet con la versione 3.0.0 -->
+</ItemGroup>
+```
+
+Infine il seguente comando per bildare il progetto
+```bash
+dotnet build #bilda il progetto
 ```
 
 Implementazione degli using e Namespace della classe Data
@@ -329,4 +346,9 @@ public async Task PublishCpuInfoMqttAsync()
     string cpuInfo = GetCpuInfo();
     await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
 }
+```
+
+infine per avviare il progetto 
+```bash
+dotnet run #avvia il progetto
 ```
