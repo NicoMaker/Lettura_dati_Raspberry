@@ -1,5 +1,5 @@
 # visualizza i dati della RAM, ROM totale Libera e usata e CPU dI Raspberry
-
+immaginestagionest
 prima parte di configurazione degli using
 
 - Management 
@@ -253,6 +253,10 @@ aggiungi pacchetti per l'uso del Protocollo MQTTnet
 dotnet add package MQTTnet
 ```
 
+Nel progetto di Visual studio scarichi MQTTnet per poterci lavorare
+
+![MQTTnet](Scaricamento_nuget_MQTT.png)
+
 Nel file csproj aggiungi questa configurazione
 ```bash
 nano Lettura_dati_Raspberry.csproj #modifici file e aggiungi la riga che segue
@@ -278,7 +282,6 @@ using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Options;
 
 namespace lettura_dati_Raspberry;
 ```
@@ -288,7 +291,7 @@ Creo diversi metodi dentro la classe Data
 - PublishMqttMessageAsync -> per publiccare i vari valori della RAM ROM e CPU
 
 ```C#
- private async Task PublishMqttMessageAsync(string topic, string payload)
+private async Task PublishMqttMessageAsync(string topic, string payload)
 {
     try
     {
@@ -296,9 +299,12 @@ Creo diversi metodi dentro la classe Data
         var mqttClient = factory.CreateMqttClient();
 
         var options = new MqttClientOptionsBuilder()
-            .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
-            .WithClientId("your-client-id") // Replace with your desired client ID
-            .Build();
+                    .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
+                    .WithCredentials("your-username", "your-password") // Replace with your MQTT credentials
+                    .WithClientId("your-client-id") // Replace with your desired client ID
+                    .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311) // Use the appropriate MQTT protocol version
+                    .Build();
+
 
         await mqttClient.ConnectAsync(options);
 
@@ -346,6 +352,14 @@ public async Task PublishCpuInfoMqttAsync()
     string cpuInfo = GetCpuInfo();
     await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
 }
+```
+
+Nel Programm.cs ricordarsi di mettere le configurazioni di pubblicazione
+
+```C#
+data.PublishRamInfoMqttAsync();
+data.PublishRomInfoMqttAsync();
+data.PublishCpuInfoMqttAsync();
 ```
 
 infine per avviare il progetto 

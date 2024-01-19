@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Options;
 
 namespace lettura_dati_Raspberry;
 
@@ -146,9 +145,12 @@ class Data
             var mqttClient = factory.CreateMqttClient();
 
             var options = new MqttClientOptionsBuilder()
-                .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
-                .WithClientId("your-client-id") // Replace with your desired client ID
-                .Build();
+                        .WithTcpServer("indirizzo server", 1883) // Replace with your MQTT broker address and port
+                        .WithCredentials("nome utente", "password") // Replace with your MQTT credentials
+                        .WithClientId("your-client-id") // Replace with your desired client ID
+                        .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311) // Use the appropriate MQTT protocol version
+                        .Build();
+
 
             await mqttClient.ConnectAsync(options);
 

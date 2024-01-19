@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "8CHkmgrA+KZlv1v9pJ/1JqCSwsTOV3sGsCa123k03C/8hTLMvmA5jnz1rd9YYj5A0D6hHMRJFtYa+jCxOWT3Ng==",
+  "dgSpecHash": "Sj593aKySshZIQKJR1xrVQrurONxAK2/no3j7Ts+FD+mdNrNSNYNYB4QyPr5Wv+9KcT52oaLcXIv/AS4+up8TQ==",
   "success": true,
   "projectFilePath": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nicol\\.nuget\\packages\\mqttnet\\4.3.3.952\\mqttnet.4.3.3.952.nupkg.sha512",
     "C:\\Users\\nicol\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
     "C:\\Users\\nicol\\.nuget\\packages\\system.management\\7.0.0\\system.management.7.0.0.nupkg.sha512"
   ],

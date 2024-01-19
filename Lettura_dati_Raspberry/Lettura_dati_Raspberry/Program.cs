@@ -15,5 +15,9 @@ class Program
 
         Console.WriteLine("\nInformazioni sulla CPU:");
         Console.WriteLine(data.GetCpuInfo());
+
+        data.PublishRamInfoMqttAsync();
+        data.PublishRomInfoMqttAsync();
+        data.PublishCpuInfoMqttAsync();
     }
 }
