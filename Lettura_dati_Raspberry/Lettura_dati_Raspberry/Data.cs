@@ -5,11 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Formatter;
 
 namespace lettura_dati_Raspberry;
 
 class Data
 {
+    private static IMqttClient _mqttClient;
+    private static string _brokerAddress = "indirizzo server";
+    private static int _brokerPort = 1883;
+    private static string _username = "nome utente";
+    private static string _password = "password";
+    private static string _clientId = "your-client-id";
+    private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
+    private static string _baseTopic = "base_topic"; // Replace with your desired base topic
+
+    public Data() { } // Private constructor to prevent external instantiation
+
     public string GetRamInfo()
     {
         try
@@ -137,22 +149,72 @@ class Data
         }
     }
 
-    private async Task PublishMqttMessageAsync(string topic, string payload)
+    public static IMqttClient GetMqttClient()
+    {
+        if (_mqttClient == null)
+        {
+            var factory = new MqttFactory();
+            _mqttClient = factory.CreateMqttClient();
+        }
+
+        return _mqttClient;
+    }
+
+    public static async Task<bool> ConnectAsync()
     {
         try
         {
-            var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
+            if (_mqttClient == null)
+            {
+                var factory = new MqttFactory();
+                _mqttClient = factory.CreateMqttClient();
+            }
+
+            if (_mqttClient.IsConnected)
+            {
+                return true;
+            }
 
             var options = new MqttClientOptionsBuilder()
-                        .WithTcpServer("indirizzo server", 1883) // Replace with your MQTT broker address and port
-                        .WithCredentials("nome utente", "password") // Replace with your MQTT credentials
-                        .WithClientId("your-client-id") // Replace with your desired client ID
-                        .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311) // Use the appropriate MQTT protocol version
-                        .Build();
+                .WithTcpServer(_brokerAddress, _brokerPort)
+                .WithCredentials(_username, _password)
+                .WithClientId(_clientId)
+                .WithProtocolVersion(_protocolVersion)
+                .Build();
 
+            await _mqttClient.ConnectAsync(options);
+            return _mqttClient.IsConnected;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error connecting MQTT client: {ex.Message}");
+            return false;
+        }
+    }
 
-            await mqttClient.ConnectAsync(options);
+    public static async Task DisconnectAsync()
+    {
+        try
+        {
+            if (_mqttClient != null && _mqttClient.IsConnected)
+            {
+                await _mqttClient.DisconnectAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error disconnecting MQTT client: {ex.Message}");
+        }
+    }
+
+    public static async Task PublishMqttMessageAsync(string topic, string payload)
+    {
+        try
+        {
+            var mqttClient = GetMqttClient();
+
+            // Connect using the shared MQTT client instance
+            await ConnectAsync();
 
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
@@ -161,7 +223,8 @@ class Data
 
             await mqttClient.PublishAsync(message);
 
-            await mqttClient.DisconnectAsync();
+            // Disconnect using the shared MQTT client instance
+            await DisconnectAsync();
         }
         catch (Exception ex)
         {
@@ -169,22 +232,34 @@ class Data
         }
     }
 
-    public async Task PublishRamInfoMqttAsync()
+    public static string GetFullTopic(string dataType)
     {
-        string ramInfo = GetRamInfo();
-        await PublishMqttMessageAsync("ram_info_topic", ramInfo);
+        // Concatenate the base topic with the specific data type
+        return $"{_baseTopic}/{dataType}";
     }
 
-    public async Task PublishRomInfoMqttAsync()
+    public string GetDataInfo(string datatype)
     {
-        string romInfo = GetRomInfo();
-        await PublishMqttMessageAsync("rom_info_topic", romInfo);
+        var GetRaminfo = GetRamInfo();
+        var GetRominfo = GetRomInfo();
+        var GetCpuinfo = GetCpuInfo();
+
+        return $"Info RAM: {GetRaminfo} , Info ROM {GetRomInfo}, Info CPU {GetCpuinfo}";
     }
 
-    public async Task PublishCpuInfoMqttAsync()
+    public async Task PublishDataInfoMqttAsync(string dataType)
     {
-        string cpuInfo = GetCpuInfo();
-        await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
+        try
+        {
+            string dataInfo = GetDataInfo(dataType);
+            string fullTopic = $"{Data.GetFullTopic(dataType)}";
+
+            await Data.PublishMqttMessageAsync(fullTopic, dataInfo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error publishing {dataType} info MQTT message: {ex.Message}");
+        }
     }
 
 }

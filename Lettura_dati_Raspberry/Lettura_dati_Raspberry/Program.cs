@@ -2,7 +2,7 @@
 namespace lettura_dati_Raspberry;
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Data data = new Data();
 
@@ -16,8 +16,6 @@ class Program
         Console.WriteLine("\nInformazioni sulla CPU:");
         Console.WriteLine(data.GetCpuInfo());
 
-        data.PublishRamInfoMqttAsync();
-        data.PublishRomInfoMqttAsync();
-        data.PublishCpuInfoMqttAsync();
+        await data.PublishDataInfoMqttAsync("temperature");
     }
 }

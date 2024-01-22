@@ -286,27 +286,102 @@ using MQTTnet.Client;
 namespace lettura_dati_Raspberry;
 ```
 
-Creo diversi metodi dentro la classe Data
-
-- PublishMqttMessageAsync -> per publiccare i vari valori della RAM ROM e CPU
+Aggiungere le variabile dove mettere le credenzili
 
 ```C#
-private async Task PublishMqttMessageAsync(string topic, string payload)
+private static IMqttClient _mqttClient;
+private static string _brokerAddress = "indirizzo server";
+private static int _brokerPort = 1883;
+private static string _username = "nome utente";
+private static string _password = "password";
+private static string _clientId = "your-client-id";
+private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
+private static string _baseTopic = "base_topic"; // Replace with your desired base topic
+```
+
+Dicharo il costruttore Data come Privato
+```C#
+public Data() { } // Private constructor to prevent external instantiation
+```
+
+### Creo le funzioni che mi servono
+- per creare il client (GetMqttClient)
+```C#
+public static IMqttClient GetMqttClient()
+{
+    if (_mqttClient == null)
+    {
+        var factory = new MqttFactory();
+        _mqttClient = factory.CreateMqttClient();
+    }
+
+    return _mqttClient;
+}
+```
+
+- Per connetersi al Client (ConnectAsync)
+```C#
+public static async Task<bool> ConnectAsync()
 {
     try
     {
-        var factory = new MqttFactory();
-        var mqttClient = factory.CreateMqttClient();
+        if (_mqttClient == null)
+        {
+            var factory = new MqttFactory();
+            _mqttClient = factory.CreateMqttClient();
+        }
+
+        if (_mqttClient.IsConnected)
+        {
+            return true;
+        }
 
         var options = new MqttClientOptionsBuilder()
-                    .WithTcpServer("your-mqtt-broker-address", 1883) // Replace with your MQTT broker address and port
-                    .WithCredentials("your-username", "your-password") // Replace with your MQTT credentials
-                    .WithClientId("your-client-id") // Replace with your desired client ID
-                    .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311) // Use the appropriate MQTT protocol version
-                    .Build();
+            .WithTcpServer(_brokerAddress, _brokerPort)
+            .WithCredentials(_username, _password)
+            .WithClientId(_clientId)
+            .WithProtocolVersion(_protocolVersion)
+            .Build();
 
+        await _mqttClient.ConnectAsync(options);
+        return _mqttClient.IsConnected;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error connecting MQTT client: {ex.Message}");
+        return false;
+    }
+}
+```
 
-        await mqttClient.ConnectAsync(options);
+- Per disconnetsi dal Client (DisconnectAsync)
+```C#
+public static async Task DisconnectAsync()
+{
+    try
+    {
+        if (_mqttClient != null && _mqttClient.IsConnected)
+        {
+            await _mqttClient.DisconnectAsync();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error disconnecting MQTT client: {ex.Message}");
+    }
+}
+```
+
+- Metodo per pubblicare i dati (PublishMqttMessageAsync)
+```C#
+public static async Task PublishMqttMessageAsync(string topic, string payload)
+{
+    try
+    {
+        var mqttClient = GetMqttClient();
+
+        // Connect using the shared MQTT client instance
+        await ConnectAsync();
 
         var message = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
@@ -315,7 +390,8 @@ private async Task PublishMqttMessageAsync(string topic, string payload)
 
         await mqttClient.PublishAsync(message);
 
-        await mqttClient.DisconnectAsync();
+        // Disconnect using the shared MQTT client instance
+        await DisconnectAsync();
     }
     catch (Exception ex)
     {
@@ -324,42 +400,66 @@ private async Task PublishMqttMessageAsync(string topic, string payload)
 }
 ```
 
-- PublishRamInfoMqttAsyn -> publica i dati della RAM
-
+- Stampa i dati da quel metodo che legge i dati con quel topic (GetFullTopic)
 ```C#
-public async Task PublishRamInfoMqttAsync()
+public static string GetFullTopic(string dataType)
 {
-    string ramInfo = GetRamInfo();
-    await PublishMqttMessageAsync("ram_info_topic", ramInfo);
+    // Concatenate the base topic with the specific data type
+    return $"{_baseTopic}/{dataType}";
 }
 ```
 
-- PublishRomInfoMqttAsync -> publica i dati della ROM
-
+- Stmpa info dei dati acquisiti (Get)
 ```C#
-public async Task PublishRomInfoMqttAsync()
+public string GetDataInfo(string datatype)
 {
-    string romInfo = GetRomInfo();
-    await PublishMqttMessageAsync("rom_info_topic", romInfo);
+    var GetRaminfo = GetRamInfo();
+    var GetRominfo = GetRomInfo();
+    var GetCpuinfo = GetCpuInfo();
+
+    return $"Info RAM: {GetRaminfo} , Info ROM {GetRomInfo}, Info CPU {GetCpuinfo}";
 }
 ```
 
-- PublishCpuInfoMqttAsyn -> publica i dati della CPU
-
+- Stampa le informazione dei dati aquisiti
 ```C#
-public async Task PublishCpuInfoMqttAsync()
+public async Task PublishDataInfoMqttAsync(string dataType)
 {
-    string cpuInfo = GetCpuInfo();
-    await PublishMqttMessageAsync("cpu_info_topic", cpuInfo);
+    try
+    {
+        string dataInfo = GetDataInfo(dataType);
+        string fullTopic = $"{MqttManager.GetFullTopic(dataType)}";
+
+        await MqttManager.PublishMqttMessageAsync(fullTopic, dataInfo);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error publishing {dataType} info MQTT message: {ex.Message}");
+    }
 }
 ```
 
-Nel Programm.cs ricordarsi di mettere le configurazioni di pubblicazione
-
+infine cambio Program in questo modo per avere i dati da mandare via MQTT
 ```C#
-data.PublishRamInfoMqttAsync();
-data.PublishRomInfoMqttAsync();
-data.PublishCpuInfoMqttAsync();
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        Data data = new Data();
+
+        // Stampare informazioni sulla RAM, ROM e CPU
+        Console.WriteLine("Informazioni sulla RAM:");
+        Console.WriteLine(data.GetRamInfo());
+
+        Console.WriteLine("\nInformazioni sulla ROM:");
+        Console.WriteLine(data.GetRomInfo());
+
+        Console.WriteLine("\nInformazioni sulla CPU:");
+        Console.WriteLine(data.GetCpuInfo());
+
+        await data.PublishDataInfoMqttAsync("temperature");
+    }
+}
 ```
 
 infine per avviare il progetto 
