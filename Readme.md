@@ -274,7 +274,7 @@ dotnet build #bilda il progetto
 
 Implementazione degli using e Namespace della classe Data
 
-```bash
+```C#
 using System;
 using System.Diagnostics;
 using System.Globalization;
