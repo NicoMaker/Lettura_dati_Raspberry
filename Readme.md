@@ -1,5 +1,4 @@
 # visualizza i dati della RAM, ROM totale Libera e usata e CPU dI Raspberry
-immaginestagionest
 prima parte di configurazione degli using
 
 - Management 
