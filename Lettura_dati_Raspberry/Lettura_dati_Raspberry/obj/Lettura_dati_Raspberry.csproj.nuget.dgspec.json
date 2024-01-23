@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj": {}
+    "D:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj": {}
   },
   "projects": {
-    "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj": {
+    "D:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
+        "projectUniqueName": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
         "projectName": "Lettura_dati_Raspberry",
-        "projectPath": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
+        "projectPath": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
         "packagesPath": "C:\\Users\\nicol\\.nuget\\packages\\",
-        "outputPath": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\obj\\",
+        "outputPath": "D:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Lettura_dati_Raspberry")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+439b2d7d651a67787c032daccbbfc6ba3f4efa1c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+27cfe0a9819baf88fe85af2f6769828311cdcb46")]
 [assembly: System.Reflection.AssemblyProductAttribute("Lettura_dati_Raspberry")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Lettura_dati_Raspberry")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

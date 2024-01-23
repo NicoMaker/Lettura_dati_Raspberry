@@ -194,7 +194,7 @@ public string GetCpuInfo()
 
 ## ora lo si bilda sul Raspberry
 
-### mi coonnetto via ssh
+### mi connetto via ssh
 
 ```bash
 sshnome@inidrizzo_ip
@@ -272,7 +272,13 @@ Infine il seguente comando per bildare il progetto
 dotnet build #bilda il progetto
 ```
 
-Implementazione degli using e Namespace della classe Data
+Creo una classe dove fare le implementazioni di cosa mandare via MQTT
+```C#
+internal class DataSend{
+    // codice
+}
+```
+Implementazione degli using e Namespace della classe DataSend
 
 ```C#
 using System;
@@ -297,12 +303,11 @@ private static string _password = "password";
 private static string _clientId = "your-client-id";
 private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
 private static string _baseTopic = "base_topic"; // Replace with your desired base topic
+
+// creo istanza dell'ogetto della classe Data
+Data data = new Data();
 ```
 
-Dicharo il costruttore Data come Privato
-```C#
-public Data() { } // Private constructor to prevent external instantiation
-```
 
 ### Creo le funzioni che mi servono
 - per creare il client (GetMqttClient)
@@ -413,24 +418,24 @@ public static string GetFullTopic(string dataType)
 ```C#
 public string GetDataInfo(string datatype)
 {
-    var GetRaminfo = GetRamInfo();
-    var GetRominfo = GetRomInfo();
-    var GetCpuinfo = GetCpuInfo();
+    var GetRaminfo = data.GetRamInfo();
+    var GetRominfo = data.GetRomInfo();
+    var GetCpuinfo = data.GetCpuInfo();
 
-    return $"Info RAM: {GetRaminfo} , Info ROM {GetRomInfo}, Info CPU {GetCpuinfo}";
+    return $"Info RAM: {GetRaminfo} , Info ROM {GetRominfo}, Info CPU {GetCpuinfo}";
 }
 ```
 
 - Stampa le informazione dei dati aquisiti
 ```C#
-public async Task PublishDataInfoMqttAsync(string dataType)
+public async Task     public async Task PublishDataInfoMqttAsync(string dataType)
 {
     try
     {
         string dataInfo = GetDataInfo(dataType);
-        string fullTopic = $"{MqttManager.GetFullTopic(dataType)}";
+        string fullTopic = $"{GetFullTopic(dataType)}";
 
-        await MqttManager.PublishMqttMessageAsync(fullTopic, dataInfo);
+        await PublishMqttMessageAsync(fullTopic, dataInfo);
     }
     catch (Exception ex)
     {
