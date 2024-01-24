@@ -323,14 +323,17 @@ private static async Task _connectclient()
 {
     _initclient();
 
-    var options = new MqttClientOptionsBuilder()
-        .WithTcpServer(_brokerAddress, _brokerPort)
-        .WithCredentials(_username, _password)
-        .WithClientId(_clientId)
-        .WithProtocolVersion(_protocolVersion)
-        .Build();
+    if (!_mqttClient.IsConnected)
+    {
+        var options = new MqttClientOptionsBuilder()
+            .WithTcpServer(_brokerAddress, _brokerPort)
+            .WithCredentials(_username, _password)
+            .WithClientId(_clientId)
+            .WithProtocolVersion(_protocolVersion)
+            .Build();
 
-    await _mqttClient.ConnectAsync(options);
+        await _mqttClient.ConnectAsync(options);
+    }
 }
 ```
 
@@ -340,16 +343,21 @@ public static async Task Send(string topic, string message)
 {
     await _connectclient();
 
-    var fullTopic = $"{_baseTopic}/{topic}";
-    var mqttMessage = new MqttApplicationMessageBuilder()
-        .WithTopic(fullTopic)
-        .WithPayload(message)
-        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
-        .WithRetainFlag()
-        .Build();
+    if (_mqttClient.IsConnected)
+    {
+        var mqttMessage = new MqttApplicationMessageBuilder()
+            .WithTopic(topic)
+            .WithPayload(message)
+            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
+            .Build();
 
-
-    await _mqttClient.PublishAsync(mqttMessage);
+        await _mqttClient.PublishAsync(mqttMessage);
+    }
+    else
+    {
+        Console.WriteLine("MQTT client is not connected. Message not sent.");
+        // You may want to handle this case in a way that suits your application.
+    }
 }
 ```
 
