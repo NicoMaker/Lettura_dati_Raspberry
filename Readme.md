@@ -361,6 +361,34 @@ public static async Task Send(string topic, string message)
 }
 ```
 
+infine metto in ordine il Program
+cambio il metodo main con anche una variabile che tiene a mente i valori della RAM,ROM e CPU e li mando con il loro topic
+```C#
+static async Task Main(string[] args)
+{
+    Data data = new Data();
+
+    // Stampare informazioni sulla RAM, ROM e CPU
+    Console.WriteLine("Informazioni sulla RAM:");
+    Console.WriteLine(data.GetRamInfo());
+
+    string RAM = data.GetRamInfo();
+    DataSend.Send("RAM", RAM);
+
+    Console.WriteLine("\nInformazioni sulla ROM:");
+    Console.WriteLine(data.GetRomInfo());
+
+    string ROM = data.GetRamInfo();
+    DataSend.Send("ROM", ROM);
+
+    Console.WriteLine("\nInformazioni sulla CPU:");
+    Console.WriteLine(data.GetCpuInfo());
+
+    string  CPU = data.GetRamInfo();
+    DataSend.Send("CPU", CPU);
+}
+```
+
 infine per avviare il progetto 
 ```bash
 dotnet run #avvia il progetto

@@ -11,10 +11,19 @@ class Program
         Console.WriteLine("Informazioni sulla RAM:");
         Console.WriteLine(data.GetRamInfo());
 
+        string RAM = data.GetRamInfo();
+        DataSend.Send("RAM", RAM);
+
         Console.WriteLine("\nInformazioni sulla ROM:");
         Console.WriteLine(data.GetRomInfo());
 
+        string ROM = data.GetRamInfo();
+        DataSend.Send("ROM", ROM);
+
         Console.WriteLine("\nInformazioni sulla CPU:");
         Console.WriteLine(data.GetCpuInfo());
+
+        string  CPU = data.GetRamInfo();
+        DataSend.Send("CPU", CPU);
     }
 }
