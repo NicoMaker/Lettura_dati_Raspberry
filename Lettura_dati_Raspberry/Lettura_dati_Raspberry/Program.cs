@@ -6,7 +6,6 @@ class Program
     static async Task Main(string[] args)
     {
         Data data = new Data();
-        DataSend dataSend = new DataSend();
 
         // Stampare informazioni sulla RAM, ROM e CPU
         Console.WriteLine("Informazioni sulla RAM:");
@@ -17,7 +16,5 @@ class Program
 
         Console.WriteLine("\nInformazioni sulla CPU:");
         Console.WriteLine(data.GetCpuInfo());
-
-        await dataSend.PublishDataInfoMqttAsync("temperature");
     }
 }

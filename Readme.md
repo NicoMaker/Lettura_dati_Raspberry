@@ -281,189 +281,75 @@ Implementazione degli using e Namespace della classe DataSend
 
 ```C#
 using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
-
-namespace lettura_dati_Raspberry;
+using MQTTnet.Formatter;
+using MQTTnet.Protocol;
+using MQTTnet.Server;
+namespace Lettura_dati_Raspberry;
 ```
 
-Aggiungere le variabile dove mettere le credenzili
+Aggiungere le variabili della classe dove mettere le credenzili
 
 ```C#
-private static IMqttClient _mqttClient;
-private static string _brokerAddress = "indirizzo server";
-private static int _brokerPort = 1883;
-private static string _username = "nome utente";
-private static string _password = "password";
-private static string _clientId = "your-client-id";
-private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
-private static string _baseTopic = "base_topic"; // Replace with your desired base topic
-
-// creo istanza dell'ogetto della classe Data
-Data data = new Data();
+ private static IMqttClient _mqttClient;
+ private static string _brokerAddress = "indirizzo server";
+ private static int _brokerPort = 1883;
+ private static string _username = "nome utente";
+ private static string _password = "password";
+ private static string _clientId = "your-client-id";
+ private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
+ private static string _baseTopic = "base_topic"; // Replace with your desired base topic
 ```
-
 
 ### Creo le funzioni che mi servono
-- per creare il client (GetMqttClient)
+- Per inizializzare il client (_initclient)
 ```C#
-public static IMqttClient GetMqttClient()
+private static void _initclient()
 {
     if (_mqttClient == null)
     {
         var factory = new MqttFactory();
         _mqttClient = factory.CreateMqttClient();
     }
-
-    return _mqttClient;
 }
 ```
 
-- Per connetersi al Client (ConnectAsync)
+- Per connetersi al Client (_connectclient)
 ```C#
-public static async Task<bool> ConnectAsync()
+private static async Task _connectclient()
 {
-    try
-    {
-        if (_mqttClient == null)
-        {
-            var factory = new MqttFactory();
-            _mqttClient = factory.CreateMqttClient();
-        }
+    _initclient();
 
-        if (_mqttClient.IsConnected)
-        {
-            return true;
-        }
+    var options = new MqttClientOptionsBuilder()
+        .WithTcpServer(_brokerAddress, _brokerPort)
+        .WithCredentials(_username, _password)
+        .WithClientId(_clientId)
+        .WithProtocolVersion(_protocolVersion)
+        .Build();
 
-        var options = new MqttClientOptionsBuilder()
-            .WithTcpServer(_brokerAddress, _brokerPort)
-            .WithCredentials(_username, _password)
-            .WithClientId(_clientId)
-            .WithProtocolVersion(_protocolVersion)
-            .Build();
-
-        await _mqttClient.ConnectAsync(options);
-        return _mqttClient.IsConnected;
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error connecting MQTT client: {ex.Message}");
-        return false;
-    }
+    await _mqttClient.ConnectAsync(options);
 }
 ```
 
-- Per disconnetsi dal Client (DisconnectAsync)
+- per inviare i dati nel topic che mi interssa con il messaggio interessato (Send)
 ```C#
-public static async Task DisconnectAsync()
+public static async Task Send(string topic, string message)
 {
-    try
-    {
-        if (_mqttClient != null && _mqttClient.IsConnected)
-        {
-            await _mqttClient.DisconnectAsync();
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error disconnecting MQTT client: {ex.Message}");
-    }
-}
-```
+    await _connectclient();
 
-- Metodo per pubblicare i dati (PublishMqttMessageAsync)
-```C#
-public static async Task PublishMqttMessageAsync(string topic, string payload)
-{
-    try
-    {
-        var mqttClient = GetMqttClient();
+    var fullTopic = $"{_baseTopic}/{topic}";
+    var mqttMessage = new MqttApplicationMessageBuilder()
+        .WithTopic(fullTopic)
+        .WithPayload(message)
+        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
+        .WithRetainFlag()
+        .Build();
 
-        // Connect using the shared MQTT client instance
-        await ConnectAsync();
 
-        var message = new MqttApplicationMessageBuilder()
-            .WithTopic(topic)
-            .WithPayload(payload)
-            .Build();
-
-        await mqttClient.PublishAsync(message);
-
-        // Disconnect using the shared MQTT client instance
-        await DisconnectAsync();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error publishing MQTT message: {ex.Message}");
-    }
-}
-```
-
-- Stampa i dati da quel metodo che legge i dati con quel topic (GetFullTopic)
-```C#
-public static string GetFullTopic(string dataType)
-{
-    // Concatenate the base topic with the specific data type
-    return $"{_baseTopic}/{dataType}";
-}
-```
-
-- Stmpa info dei dati acquisiti (Get)
-```C#
-public string GetDataInfo(string datatype)
-{
-    var GetRaminfo = data.GetRamInfo();
-    var GetRominfo = data.GetRomInfo();
-    var GetCpuinfo = data.GetCpuInfo();
-
-    return $"Info RAM: {GetRaminfo} , Info ROM {GetRominfo}, Info CPU {GetCpuinfo}";
-}
-```
-
-- Stampa le informazione dei dati aquisiti
-```C#
-public async Task     public async Task PublishDataInfoMqttAsync(string dataType)
-{
-    try
-    {
-        string dataInfo = GetDataInfo(dataType);
-        string fullTopic = $"{GetFullTopic(dataType)}";
-
-        await PublishMqttMessageAsync(fullTopic, dataInfo);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error publishing {dataType} info MQTT message: {ex.Message}");
-    }
-}
-```
-
-infine cambio Program in questo modo per avere i dati da mandare via MQTT
-```C#
-class Program
-{
-    static async Task Main(string[] args)
-    {
-        Data data = new Data();
-        DataSend dataSend = new DataSend(); // creo istanza dell'ogetto della classe DataSend
-
-        // Stampare informazioni sulla RAM, ROM e CPU
-        Console.WriteLine("Informazioni sulla RAM:");
-        Console.WriteLine(data.GetRamInfo());
-
-        Console.WriteLine("\nInformazioni sulla ROM:");
-        Console.WriteLine(data.GetRomInfo());
-
-        Console.WriteLine("\nInformazioni sulla CPU:");
-        Console.WriteLine(data.GetCpuInfo());
-
-        await dataSend.PublishDataInfoMqttAsync("temperature");
-    }
+    await _mqttClient.PublishAsync(mqttMessage);
 }
 ```
 
