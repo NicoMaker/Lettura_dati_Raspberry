@@ -1,13 +1,12 @@
 # visualizza i dati della RAM, ROM totale Libera e usata e CPU dI Raspberry
+
 prima parte di configurazione degli using
 
-- Management 
+- Management
 
 ![scaricamneto Nuget](Scaricamento_nuget.png)
 
-
 intanto parte di configurazione degli using e namespace
-
 
 ```C#
 using System;
@@ -206,8 +205,9 @@ sudo service ssh start #attivi ssh
 
 ```bash
 sudo rm -r nomecartella #elimini cartella
-rm nomefile #elimini file 
+rm nomefile #elimini file
 ```
+
 ### Comprimi La cartella scaricando WinRar e lo passi via SCP al Raspberry con estensuibe .zip
 
 ```bash
@@ -216,6 +216,7 @@ scp -r C:\percorso\del\tuo\file.txt pi@192.168.1.2:/percorso/di/destinazione/ #s
 ```
 
 ### Decompressione file .zip passato da Windows
+
 ```bash
 sudo apt-get install unzip #scarico file per estensione .zip
 unzip nome_file.zip #decomprime file
@@ -223,6 +224,7 @@ unzip nome_file.zip -d percorso/di/destinazione #sposto dove mi serve
 ```
 
 ### Scarico Dotnet
+
 ```bash
 curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel STS #scarico dotnet nel raspberry
 
@@ -241,7 +243,6 @@ dotnet run #esegue il codice dotnet
 ![lettura dati Raspberry](Lettura_dati1.png)
 ![lettura dati Raspberry](Lettura_dati2.png)
 
-
 # Dati con il Protocollo MQTT
 
 ## Implementami la funzionalità per usare MQTT nel Raspberry
@@ -257,26 +258,31 @@ Nel progetto di Visual studio scarichi MQTTnet per poterci lavorare
 ![MQTTnet](Scaricamento_nuget_MQTT.png)
 
 Nel file csproj aggiungi questa configurazione
+
 ```bash
 nano Lettura_dati_Raspberry.csproj #modifici file e aggiungi la riga che segue
 ```
+
 ```xml
- <ItemGroup> 
+ <ItemGroup>
     <PackageReference Include="MQTTnet" Version="3.0.0" /><!-- qui includo il pacchetto MQTTnet con la versione 3.0.0 -->
 </ItemGroup>
 ```
 
 Infine il seguente comando per bildare il progetto
+
 ```bash
 dotnet build #bilda il progetto
 ```
 
 Creo una classe dove fare le implementazioni di cosa mandare via MQTT
+
 ```C#
 internal class DataSend{
-    // codice
+    // vari metodi
 }
 ```
+
 Implementazione degli using e Namespace della classe DataSend
 
 ```C#
@@ -305,7 +311,9 @@ Aggiungere le variabili della classe dove mettere le credenzili
 ```
 
 ### Creo le funzioni che mi servono
-- Per inizializzare il client (_initclient)
+
+- Per inizializzare il client (\_initclient)
+
 ```C#
 private static void _initclient()
 {
@@ -317,7 +325,8 @@ private static void _initclient()
 }
 ```
 
-- Per connetersi al Client (_connectclient)
+- Per connetersi al Client (\_connectclient)
+
 ```C#
 private static async Task _connectclient()
 {
@@ -338,6 +347,7 @@ private static async Task _connectclient()
 ```
 
 - per inviare i dati nel topic che mi interssa con il messaggio interessato (Send)
+
 ```C#
 public static async Task Send(string topic, string message)
 {
@@ -363,6 +373,7 @@ public static async Task Send(string topic, string message)
 
 infine metto in ordine il Program
 cambio il metodo main con anche una variabile che tiene a mente i valori della RAM,ROM e CPU e li mando con il loro topic
+
 ```C#
 static async Task Main(string[] args)
 {
@@ -389,7 +400,8 @@ static async Task Main(string[] args)
 }
 ```
 
-infine per avviare il progetto 
+infine per avviare il progetto
+
 ```bash
 dotnet run #avvia il progetto
 ```
