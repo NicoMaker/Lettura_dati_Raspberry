@@ -1,0 +1,6 @@
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.csproj.AssemblyReference.cache
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.GeneratedMSBuildEditorConfig.editorconfig
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.AssemblyInfoInputs.cache
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.AssemblyInfo.cs
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.csproj.CoreCompileInputs.cache
+D:\Corso ITS IIOT\2 anno\Stage\Attività\2_Attività\Lettura Dati\Lettura_dati_Raspberry\Lettura_dati_Raspberry\Lettura_dati_Raspberry\obj\Debug\net7.0\Lettura_dati_Raspberry.sourcelink.json

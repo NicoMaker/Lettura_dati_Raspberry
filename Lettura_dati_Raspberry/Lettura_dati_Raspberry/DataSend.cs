@@ -15,9 +15,7 @@ namespace Lettura_dati_Raspberry
         private static int _brokerPort = 1883;
         private static string _username = "nome utente";
         private static string _password = "password";
-        private static string _clientId = "your-client-id";
         private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
-        private static string _baseTopic = "base_topic"; // Replace with your desired base topic
 
         private static void _initclient()
         {
@@ -37,7 +35,6 @@ namespace Lettura_dati_Raspberry
                 var options = new MqttClientOptionsBuilder()
                     .WithTcpServer(_brokerAddress, _brokerPort)
                     .WithCredentials(_username, _password)
-                    .WithClientId(_clientId)
                     .WithProtocolVersion(_protocolVersion)
                     .Build();
 
@@ -49,21 +46,14 @@ namespace Lettura_dati_Raspberry
         {
             await _connectclient();
 
-            if (_mqttClient.IsConnected)
-            {
-                var mqttMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic(topic)
-                    .WithPayload(message)
-                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
-                    .Build();
 
-                await _mqttClient.PublishAsync(mqttMessage);
-            }
-            else
-            {
-                Console.WriteLine("MQTT client is not connected. Message not sent.");
-                // You may want to handle this case in a way that suits your application.
-            }
+            var mqttMessage = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(message)
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
+                .Build();
+
+            await _mqttClient.PublishAsync(mqttMessage);
         }
     }
 }

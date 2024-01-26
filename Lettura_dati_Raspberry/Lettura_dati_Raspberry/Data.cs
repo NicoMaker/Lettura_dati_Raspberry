@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
+using Lettura_dati_Raspberry;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
@@ -11,8 +13,10 @@ namespace lettura_dati_Raspberry;
 
 class Data
 {
-    public string GetRamInfo()
+    public List<SensorData> GetRamInfo()
     {
+        List<SensorData> sensorData = new List<SensorData>();
+
         try
         {
             var processStartInfo = new ProcessStartInfo
@@ -44,24 +48,51 @@ class Data
                             double usedRamPercentage = (double)usedRam / totalRam * 100;
                             double freeRamPercentage = (double)freeRam / totalRam * 100;
 
-                            return $"RAM Used: {usedRamPercentage:F2}%, RAM Free: {freeRamPercentage:F2}%, RAM Total: {totalRam} MB";
+                            sensorData.Add(
+                                new SensorData // istaznzio già i dati popolandoli con i dati interessati
+                                {
+                                    Name = "RAM/Free",
+                                    Value = freeRamPercentage.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                }
+                             );
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "RAM/Used",
+                                    Value = usedRamPercentage.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                });
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "RAM/Total",
+                                    Value = totalRam.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "MB"
+                                }
+                                );
                         }
                     }
                 }
             }
-
-            return "Failed to retrieve RAM information";
         }
         catch (Exception ex)
         {
-            return $"Error: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
+
+        return sensorData;
     }
 
 
 
-    public string GetRomInfo()
+    public List<SensorData> GetRomInfo()
     {
+
+        List<SensorData> sensorData = new List<SensorData>();
+
         try
         {
             var processStartInfo = new ProcessStartInfo
@@ -94,18 +125,47 @@ class Data
                             double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
                             double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
 
-                            return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom / (1024 * 1024)} MB";
+                            double usedrompercentual = (usedRom / totalRom) * 100;
+                            double freerompercentual = (freeRom / totalRom) * 100;
+                            double totalrommb = totalRom / (1024 * 1024);
+
+                            sensorData.Add(
+                                new SensorData // istaznzio già i dati popolandoli con i dati interessati
+                                {
+                                    Name = "ROM/Free",
+                                    Value = usedrompercentual.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                }
+                             );
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "ROM/Used",
+                                    Value = freerompercentual.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                });
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "ROM/Total",
+                                    Value = totalrommb.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "MB"
+                                }
+                                );
                         }
                     }
                 }
             }
 
-            return "Failed to retrieve ROM information";
         }
         catch (Exception ex)
         {
-            return $"Error: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
+
+        return sensorData;
     }
 
 

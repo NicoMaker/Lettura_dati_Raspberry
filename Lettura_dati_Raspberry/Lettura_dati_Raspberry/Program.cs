@@ -9,21 +9,18 @@ class Program
 
         // Stampare informazioni sulla RAM, ROM e CPU
         Console.WriteLine("Informazioni sulla RAM:");
-        Console.WriteLine(data.GetRamInfo());
-
         string RAM = data.GetRamInfo();
-        DataSend.Send("RAM", RAM);
+        await DataSend.Send("RAM", RAM);
+        Console.WriteLine(RAM);
 
         Console.WriteLine("\nInformazioni sulla ROM:");
-        Console.WriteLine(data.GetRomInfo());
-
-        string ROM = data.GetRamInfo();
-        DataSend.Send("ROM", ROM);
+        string ROM = data.GetRomInfo();
+        await DataSend.Send("ROM", ROM);
+        Console.WriteLine(ROM);
 
         Console.WriteLine("\nInformazioni sulla CPU:");
-        Console.WriteLine(data.GetCpuInfo());
-
-        string  CPU = data.GetRamInfo();
-        DataSend.Send("CPU", CPU);
+        string CPU = data.GetCpuInfo();
+        await DataSend.Send("CPU", CPU);
+        Console.WriteLine(CPU);
     }
 }
