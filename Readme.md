@@ -389,7 +389,7 @@ static async Task Main(string[] args)
 
 creo una classe SensorData dove ottengo i vari tipi di dati da mandare via MQTT
 ```C#
-class SensorData(){
+internal class SensorData(){
     // codice 
 }
 ```
@@ -562,8 +562,112 @@ public List<SensorData> GetRomInfo()
 }
 ```
 
+- Funzione GetCpuInfo
+```C#
+public List<SensorData> GetCpuInfo()
+{
+    List<SensorData> sensorData = new List<SensorData>();
+
+    try
+    {
+        var processStartInfo = new ProcessStartInfo
+        {
+            FileName = "cat",
+            Arguments = "/proc/cpuinfo",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using (var process = Process.Start(processStartInfo))
+        {
+            using (var reader = process.StandardOutput)
+            {
+                string currentTopic = null;
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+
+                    // Split the line into key and value
+                    string[] parts = line.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2)
+                    {
+                        string key = parts[0].Trim();
+                        string value = parts[1].Trim();
+
+                        // Determine the topic based on the key or content
+                        if (key.ToLower() == "processor")
+                        {
+                            currentTopic = "Processor";
+                        }
+                        else if (key.ToLower() == "model name")
+                        {
+                            currentTopic = "Model Name";
+                        }
+                        // Add more conditions for other topics as needed
+
+                        // Create a SensorData object
+                        if (currentTopic != null)
+                        {
+                            sensorData.Add(new SensorData
+                            {
+                                Name = currentTopic,
+                                Value = value,
+                                Unit = "" // You can customize this based on your needs
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+
+    return sensorData;
+}
+```
+
+modifici program.cs
+```C#
+using Lettura_dati_Raspberry;
+using System;
+namespace lettura_dati_Raspberry;
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        Data data = new Data();
+        
+        List <SensorData> Ram = new List <SensorData>();
+        List <SensorData> Rom = new List <SensorData>();
+        List <SensorData> Cpu = new List <SensorData>();
+
+        Ram = data.GetRamInfo();
+        Rom = data.GetRomInfo();
+        Cpu = data.GetCpuInfo(); 
+
+        // invia i dati via MQTT
+
+        for(int i = 0; i < Ram.Count; i++)
+            await DataSend.Send(Ram[i].Name, Ram[i].Value);
+
+        for (int i = 0; i < Rom.Count; i++)
+            await DataSend.Send(Rom[i].Name, Rom[i].Value);
+
+        for (int i = 0; i < Cpu.Count; i++)
+            await DataSend.Send(Cpu[i].Name, Cpu[i].Value);
+    }
+}
+```
+
 infine per avviare il progetto
 
 ```bash
 dotnet run #avvia il progetto
 ```
+
+User And Stakeholders -> chiunque ha l'utilità di monitorare i dati

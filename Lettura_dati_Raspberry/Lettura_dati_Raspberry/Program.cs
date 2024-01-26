@@ -6,21 +6,24 @@ class Program
     static async Task Main(string[] args)
     {
         Data data = new Data();
+        
+        List <SensorData> Ram = new List <SensorData>();
+        List <SensorData> Rom = new List <SensorData>();
+        List <SensorData> Cpu = new List <SensorData>();
 
-        // Stampare informazioni sulla RAM, ROM e CPU
-        Console.WriteLine("Informazioni sulla RAM:");
-        string RAM = data.GetRamInfo();
-        await DataSend.Send("RAM", RAM);
-        Console.WriteLine(RAM);
+        Ram = data.GetRamInfo();
+        Rom = data.GetRomInfo();
+        Cpu = data.GetCpuInfo(); 
 
-        Console.WriteLine("\nInformazioni sulla ROM:");
-        string ROM = data.GetRomInfo();
-        await DataSend.Send("ROM", ROM);
-        Console.WriteLine(ROM);
+        // invia i dati via MQTT
 
-        Console.WriteLine("\nInformazioni sulla CPU:");
-        string CPU = data.GetCpuInfo();
-        await DataSend.Send("CPU", CPU);
-        Console.WriteLine(CPU);
+        for(int i = 0; i < Ram.Count; i++)
+            await DataSend.Send(Ram[i].Name, Ram[i].Value);
+
+        for (int i = 0; i < Rom.Count; i++)
+            await DataSend.Send(Rom[i].Name, Rom[i].Value);
+
+        for (int i = 0; i < Cpu.Count; i++)
+            await DataSend.Send(Cpu[i].Name, Cpu[i].Value);
     }
 }

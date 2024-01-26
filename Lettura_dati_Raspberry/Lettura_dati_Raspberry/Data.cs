@@ -170,8 +170,10 @@ class Data
 
 
 
-    public string GetCpuInfo()
+    public List<SensorData> GetCpuInfo()
     {
+        List<SensorData> sensorData = new List<SensorData>();
+
         try
         {
             var processStartInfo = new ProcessStartInfo
@@ -187,14 +189,51 @@ class Data
             {
                 using (var reader = process.StandardOutput)
                 {
-                    string output = reader.ReadToEnd();
-                    return $"CPU Info:\n{output}";
+                    string currentTopic = null;
+
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+
+                        // Split the line into key and value
+                        string[] parts = line.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length == 2)
+                        {
+                            string key = parts[0].Trim();
+                            string value = parts[1].Trim();
+
+                            // Determine the topic based on the key or content
+                            if (key.ToLower() == "processor")
+                            {
+                                currentTopic = "Processor";
+                            }
+                            else if (key.ToLower() == "model name")
+                            {
+                                currentTopic = "Model Name";
+                            }
+                            // Add more conditions for other topics as needed
+
+                            // Create a SensorData object
+                            if (currentTopic != null)
+                            {
+                                sensorData.Add(new SensorData
+                                {
+                                    Name = currentTopic,
+                                    Value = value,
+                                    Unit = "" // You can customize this based on your needs
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
         catch (Exception ex)
         {
-            return $"Error: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
+
+        return sensorData;
     }
+
 }
