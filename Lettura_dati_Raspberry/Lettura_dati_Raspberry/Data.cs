@@ -204,11 +204,11 @@ class Data
                             // Determine the topic based on the key or content
                             if (key.ToLower() == "processor")
                             {
-                                currentTopic = "Cpu/processor";
+                                currentTopic = "CPU/processor";
                             }
                             else if (key.ToLower() == "model name")
                             {
-                                currentTopic = "Cpu/Model Name";
+                                currentTopic = "CPU/Model Name";
                             }
                             // Add more conditions for other topics as needed
 
@@ -227,7 +227,7 @@ class Data
                             {
                                 sensorData.Add(new SensorData
                                 {
-                                    Name = "Cpu/key",
+                                    Name = "CPU/key",
                                     Value = key,
                                     Unit = "" // You can customize this based on your needs
                                 });
@@ -237,7 +237,7 @@ class Data
                             {
                                 sensorData.Add(new SensorData
                                 {
-                                    Name = "Cpu/value",
+                                    Name = "CPU/value",
                                     Value = value,
                                     Unit = "" // You can customize this based on your needs
                                 });
