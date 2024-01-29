@@ -389,7 +389,7 @@ static async Task Main(string[] args)
 
 creo una classe SensorData dove ottengo i vari tipi di dati da mandare via MQTT
 ```C#
-internal class SensorData(){
+internal class SensorData{
     // codice 
 }
 ```
