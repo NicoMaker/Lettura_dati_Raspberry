@@ -127,7 +127,6 @@ class Data
 
                             double usedrompercentual = (usedRom / totalRom) * 100;
                             double freerompercentual = (freeRom / totalRom) * 100;
-                            double totalrommb = totalRom / (1024 * 1024);
 
                             sensorData.Add(
                                 new SensorData // istaznzio già i dati popolandoli con i dati interessati
@@ -150,8 +149,8 @@ class Data
                                 new SensorData
                                 {
                                     Name = "ROM/Total",
-                                    Value = totalrommb.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "MB"
+                                    Value = totalRom.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "GB"
                                 }
                                 );
                         }
@@ -205,11 +204,11 @@ class Data
                             // Determine the topic based on the key or content
                             if (key.ToLower() == "processor")
                             {
-                                currentTopic = "Processor";
+                                currentTopic = "Cpu/processor";
                             }
                             else if (key.ToLower() == "model name")
                             {
-                                currentTopic = "Model Name";
+                                currentTopic = "Cpu/Model Name";
                             }
                             // Add more conditions for other topics as needed
 
@@ -219,6 +218,26 @@ class Data
                                 sensorData.Add(new SensorData
                                 {
                                     Name = currentTopic,
+                                    Value = value,
+                                    Unit = "" // You can customize this based on your needs
+                                });
+                            }
+
+                            if (currentTopic != null)
+                            {
+                                sensorData.Add(new SensorData
+                                {
+                                    Name = "Cpu/key",
+                                    Value = key,
+                                    Unit = "" // You can customize this based on your needs
+                                });
+                            }
+
+                            if (currentTopic != null)
+                            {
+                                sensorData.Add(new SensorData
+                                {
+                                    Name = "Cpu/value",
                                     Value = value,
                                     Unit = "" // You can customize this based on your needs
                                 });

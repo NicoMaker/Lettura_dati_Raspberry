@@ -4,7 +4,7 @@ prima parte di configurazione degli using
 
 - Management
 
-![scaricamneto Nuget](Scaricamento_nuget.png)
+![scaricamneto Nuget](Immagini/Scaricamento_nuget.png)
 
 intanto parte di configurazione degli using e namespace
 
@@ -143,7 +143,7 @@ public string GetRomInfo()
                         double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
                         double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
 
-                        return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom / (1024 * 1024)} MB";
+                        return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom} GB";
                     }
                 }
             }
@@ -240,8 +240,8 @@ dotnet run #esegue il codice dotnet
 
 ### Infine programma funzionate alla fine
 
-![lettura dati Raspberry](Lettura_dati1.png)
-![lettura dati Raspberry](Lettura_dati2.png)
+![lettura dati Raspberry](Immagini/Lettura_dati1.png)
+![lettura dati Raspberry](Immagini/Lettura_dati2.png)
 
 # Dati con il Protocollo MQTT
 
@@ -255,7 +255,7 @@ dotnet add package MQTTnet
 
 Nel progetto di Visual studio scarichi MQTTnet per poterci lavorare
 
-![MQTTnet](Scaricamento_nuget_MQTT.png)
+![MQTTnet](Immagini/Scaricamento_nuget_MQTT.png)
 
 Nel file csproj aggiungi questa configurazione
 
@@ -516,11 +516,10 @@ public List<SensorData> GetRomInfo()
 
                         double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
                         double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
-                        double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                        double freeRom = double.Parse(freeRomStr, CultureInfo.IariantCulture); // Convert GB to MB
 
                         double usedrompercentual = (usedRom / totalRom) * 100;
                         double freerompercentual = (freeRom / totalRom) * 100;
-                        double totalrommb = totalRom / (1024 * 1024);
 
                         sensorData.Add(
                             new SensorData // istaznzio già i dati popolandoli con i dati interessati
@@ -543,8 +542,8 @@ public List<SensorData> GetRomInfo()
                             new SensorData
                             {
                                 Name = "ROM/Total",
-                                Value = totalrommb.ToString(CultureInfo.InvariantCulture),
-                                Unit = "MB"
+                                Value = totalRom.ToString(CultureInfo.InvariantCulture),
+                                Unit = "GB"
                             }
                             );
                     }
@@ -599,11 +598,11 @@ public List<SensorData> GetCpuInfo()
                         // Determine the topic based on the key or content
                         if (key.ToLower() == "processor")
                         {
-                            currentTopic = "Processor";
+                            currentTopic = "Cpu/processor";
                         }
                         else if (key.ToLower() == "model name")
                         {
-                            currentTopic = "Model Name";
+                            currentTopic = "Cpu/Model Name";
                         }
                         // Add more conditions for other topics as needed
 
@@ -613,6 +612,26 @@ public List<SensorData> GetCpuInfo()
                             sensorData.Add(new SensorData
                             {
                                 Name = currentTopic,
+                                Value = value,
+                                Unit = "" // You can customize this based on your needs
+                            });
+                        }
+
+                        if (currentTopic != null)
+                        {
+                            sensorData.Add(new SensorData
+                            {
+                                Name = "Cpu/key",
+                                Value = key,
+                                Unit = "" // You can customize this based on your needs
+                            });
+                        }
+
+                        if (currentTopic != null)
+                        {
+                            sensorData.Add(new SensorData
+                            {
+                                Name = "Cpu/value",
                                 Value = value,
                                 Unit = "" // You can customize this based on your needs
                             });
@@ -669,5 +688,20 @@ infine per avviare il progetto
 ```bash
 dotnet run #avvia il progetto
 ```
+
+### Dati Arrivati al Client MQTT
+
+
+- RAM
+
+![Immagine dati RAM](Immagini/Ram.png)
+
+- ROM
+
+![Immagine dati ROM](Immagini/Rom.png)
+
+- CPU
+
+![Immagine dati CPU](Immagini/Cpu.png)
 
 User And Stakeholders -> chiunque ha l'utilità di monitorare i dati
