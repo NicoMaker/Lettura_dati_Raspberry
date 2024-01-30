@@ -188,7 +188,6 @@ class Data
             {
                 using (var reader = process.StandardOutput)
                 {
-                    string currentTopic = null;
 
                     while (!reader.EndOfStream)
                     {
@@ -201,47 +200,13 @@ class Data
                             string key = parts[0].Trim();
                             string value = parts[1].Trim();
 
-                            // Determine the topic based on the key or content
-                            if (key.ToLower() == "processor")
-                            {
-                                currentTopic = "CPU/processor";
-                            }
-                            else if (key.ToLower() == "model name")
-                            {
-                                currentTopic = "CPU/Model Name";
-                            }
-                            // Add more conditions for other topics as needed
 
-                            // Create a SensorData object
-                            if (currentTopic != null)
+                            sensorData.Add(new SensorData
                             {
-                                sensorData.Add(new SensorData
-                                {
-                                    Name = currentTopic,
-                                    Value = value,
-                                    Unit = "" // You can customize this based on your needs
-                                });
-                            }
-
-                            if (currentTopic != null)
-                            {
-                                sensorData.Add(new SensorData
-                                {
-                                    Name = "CPU/key",
-                                    Value = key,
-                                    Unit = "" // You can customize this based on your needs
-                                });
-                            }
-
-                            if (currentTopic != null)
-                            {
-                                sensorData.Add(new SensorData
-                                {
-                                    Name = "CPU/value",
-                                    Value = value,
-                                    Unit = "" // You can customize this based on your needs
-                                });
-                            }
+                                Name = $"CPU/{key}",
+                                Value = value,
+                                Unit = ""
+                            });
                         }
                     }
                 }

@@ -18,6 +18,7 @@ namespace lettura_dati_Raspberry;
 Leggi le informazioni sulla RAM, ROM e CPU dal PC locale e stampa in automatico anche l'stanza della clsee Data
 
 ```C#
+
 class Program
 {
     static void Main(string[] args)
@@ -483,88 +484,6 @@ public List<SensorData> GetRamInfo()
 
 - Funzione GetRomInfo
 ```C#
-public List<SensorData> GetRomInfo()
-{
-
-    List<SensorData> sensorData = new List<SensorData>();
-
-    try
-    {
-        var processStartInfo = new ProcessStartInfo
-        {
-            FileName = "df",
-            Arguments = "-h /",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
-            {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
-
-                if (lines.Length >= 2)
-                {
-                    string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (values.Length >= 6)
-                    {
-                        string totalRomStr = values[1].TrimEnd('G');
-                        string usedRomStr = values[2].TrimEnd('G');
-                        string freeRomStr = values[3].TrimEnd('G');
-
-                        double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
-                        double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
-                        double freeRom = double.Parse(freeRomStr, CultureInfo.IariantCulture); // Convert GB to MB
-
-                        double usedrompercentual = (usedRom / totalRom) * 100;
-                        double freerompercentual = (freeRom / totalRom) * 100;
-
-                        sensorData.Add(
-                            new SensorData // istaznzio già i dati popolandoli con i dati interessati
-                            {
-                                Name = "ROM/Free",
-                                Value = usedrompercentual.ToString(CultureInfo.InvariantCulture),
-                                Unit = "%"
-                            }
-                         );
-
-                        sensorData.Add(
-                            new SensorData
-                            {
-                                Name = "ROM/Used",
-                                Value = freerompercentual.ToString(CultureInfo.InvariantCulture),
-                                Unit = "%"
-                            });
-
-                        sensorData.Add(
-                            new SensorData
-                            {
-                                Name = "ROM/Total",
-                                Value = totalRom.ToString(CultureInfo.InvariantCulture),
-                                Unit = "GB"
-                            }
-                            );
-                    }
-                }
-            }
-        }
-
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error: {ex.Message}");
-    }
-
-    return sensorData;
-}
-```
-
-- Funzione GetCpuInfo
-```C#
 public List<SensorData> GetCpuInfo()
 {
     List<SensorData> sensorData = new List<SensorData>();
@@ -584,7 +503,6 @@ public List<SensorData> GetCpuInfo()
         {
             using (var reader = process.StandardOutput)
             {
-                string currentTopic = null;
 
                 while (!reader.EndOfStream)
                 {
@@ -597,47 +515,13 @@ public List<SensorData> GetCpuInfo()
                         string key = parts[0].Trim();
                         string value = parts[1].Trim();
 
-                        // Determine the topic based on the key or content
-                        if (key.ToLower() == "processor")
-                        {
-                            currentTopic = "CPU/processor";
-                        }
-                        else if (key.ToLower() == "model name")
-                        {
-                            currentTopic = "CPU/Model Name";
-                        }
-                        // Add more conditions for other topics as needed
 
-                        // Create a SensorData object
-                        if (currentTopic != null)
+                        sensorData.Add(new SensorData
                         {
-                            sensorData.Add(new SensorData
-                            {
-                                Name = currentTopic,
-                                Value = value,
-                                Unit = "" // You can customize this based on your needs
-                            });
-                        }
-
-                        if (currentTopic != null)
-                        {
-                            sensorData.Add(new SensorData
-                            {
-                                Name = "CPU/key",
-                                Value = key,
-                                Unit = "" // You can customize this based on your needs
-                            });
-                        }
-
-                        if (currentTopic != null)
-                        {
-                            sensorData.Add(new SensorData
-                            {
-                                Name = "CPU/value",
-                                Value = value,
-                                Unit = "" // You can customize this based on your needs
-                            });
-                        }
+                            Name = $"CPU/{key}",
+                            Value = value,
+                            Unit = ""
+                        });
                     }
                 }
             }
@@ -693,8 +577,13 @@ infine per avviare il progetto
 dotnet run #avvia il progetto
 ```
 
-### Dati Arrivati al Client MQTT
+### Visualizzazione dati come li visualizza prima di inviarli
 
+![Invio Dati su Console](Immagini/Arrivo_Dati.png)
+
+per uscire premi invio altrimenti ogni minuto ti manda i messaggi e ti scrive Data Send to MQTT
+
+### Dati Arrivati al Client MQTT
 
 - RAM
 
@@ -707,5 +596,6 @@ dotnet run #avvia il progetto
 - CPU
 
 ![Immagine dati CPU](Immagini/Cpu.png)
+
 
 User And Stakeholders -> chiunque ha l'utilità di monitorare i dati
