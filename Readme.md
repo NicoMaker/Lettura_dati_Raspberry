@@ -577,7 +577,7 @@ infine per avviare il progetto
 dotnet run #avvia il progetto
 ```
 
-### Visualizzazione dati come li visualizza prima di inviarli
+### Visualizzazione dati di invio su Console
 
 ![Invio Dati su Console](Immagini/Arrivo_Dati.png)
 
