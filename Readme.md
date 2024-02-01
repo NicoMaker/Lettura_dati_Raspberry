@@ -597,5 +597,64 @@ per uscire premi invio altrimenti ogni minuto ti manda i messaggi e ti scrive Da
 
 ![Immagine dati CPU](Immagini/Cpu.png)
 
+## mplementazione funzione GetMacAdress per ottenere il Mac Address del Raspberry
+```C#
+public List<SensorData> GetMacAddress()
+{
+    List<SensorData> sensorData = new List<SensorData>();
+    string macAddress = string.Empty;
+
+    try
+    {
+        NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+        foreach (NetworkInterface networkInterface in networkInterfaces)
+        {
+            if (networkInterface.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                networkInterface.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+            {
+                macAddress = networkInterface.GetPhysicalAddress().ToString();
+
+                sensorData.Add(new SensorData
+                {
+                    Name ="MAC ADDRESS",
+                    Value = macAddress,
+                    Unit = ""
+                });
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+
+    return sensorData;
+}
+```
+
+### Implemeentazione ricezione anche del Mac Adress nel proogramm.cs
+```C#
+static async Task DateperMinute(Data data)
+{
+    // invia i dati via MQTT
+
+    foreach (var ramData in data.GetRamInfo())
+        await DataSend.Send(ramData.Name, ramData.Value);
+
+    foreach (var romData in data.GetRomInfo())
+        await DataSend.Send(romData.Name, romData.Value);
+
+    foreach (var cpuData in data.GetCpuInfo())
+        await DataSend.Send(cpuData.Name, cpuData.Value);
+    foreach(var getmacadress in data.GetMacAddress())
+        await DataSend.Send(getmacadress.Name, getmacadress.Value);
+
+    Console.WriteLine("Data sent to MQTT.");
+}
+```
+
+
+![Ricezione dato del Mac Adress](Immagini/MacAdress.png)
 
 User And Stakeholders -> chiunque ha l'utilità di monitorare i dati

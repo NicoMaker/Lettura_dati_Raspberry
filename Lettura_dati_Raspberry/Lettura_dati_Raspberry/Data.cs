@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Lettura_dati_Raspberry;
@@ -220,4 +221,36 @@ class Data
         return sensorData;
     }
 
+    public List<SensorData> GetMacAddress()
+    {
+        List<SensorData> sensorData = new List<SensorData>();
+        string macAddress = string.Empty;
+
+        try
+        {
+            NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+            foreach (NetworkInterface networkInterface in networkInterfaces)
+            {
+                if (networkInterface.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                    networkInterface.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+                {
+                    macAddress = networkInterface.GetPhysicalAddress().ToString();
+
+                    sensorData.Add(new SensorData
+                    {
+                        Name ="MAC ADDRESS",
+                        Value = macAddress,
+                        Unit = ""
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+
+        return sensorData;
+    }
 }

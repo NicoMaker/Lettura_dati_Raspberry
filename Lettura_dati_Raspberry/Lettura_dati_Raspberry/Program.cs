@@ -30,6 +30,8 @@ class Program
 
         foreach (var cpuData in data.GetCpuInfo())
             await DataSend.Send(cpuData.Name, cpuData.Value);
+        foreach(var getmacadress in data.GetMacAddress())
+            await DataSend.Send(getmacadress.Name, getmacadress.Value);
 
         Console.WriteLine("Data sent to MQTT.");
     }
