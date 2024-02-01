@@ -654,6 +654,7 @@ static async Task DateperMinute(Data data)
 }
 ```
 
+### visualizzazione Mac Adress
 
 ![Ricezione dato del Mac Adress](Immagini/MacAdress.png)
 
