@@ -1,38 +1,33 @@
 ﻿using Lettura_dati_Raspberry;
 using System;
 using System.Runtime.Intrinsics.Arm;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace lettura_dati_Raspberry;
 class Program
 {
     static async Task Main(string[] args)
     {
         Data data = new Data();
-        
+        List<SensorData> macs = data.GetMacAddress();
 
-        var timer = new Timer(async _ =>
-        {
-            await DateperMinute(data);
-        }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        if (macs.Count == 0) throw new Exception("No MacAddress found");
 
-        Console.WriteLine("Press Enter to exit.");
-        Console.ReadLine();
+        Task dataTask = Task.Run(() => DateperMinute(data, macs[0].Value)); // richamo la funzione 
+
+        while (true)
+            Thread.Sleep(60000); // manda i messaggi al mqtt anche se il programma non è avviato ma la macchina deve essere accesa
+
     }
 
-    static async Task DateperMinute(Data data)
+    static async Task DateperMinute(Data data, string mac)
     {
         // invia i dati via MQTT
+        while (true)
+        {
+            foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+                await DataSend.Send($"{mac}/{sensorData.Name}", sensorData.Value);
 
-        foreach (var ramData in data.GetRamInfo())
-            await DataSend.Send(ramData.Name, ramData.Value);
-
-        foreach (var romData in data.GetRomInfo())
-            await DataSend.Send(romData.Name, romData.Value);
-
-        foreach (var cpuData in data.GetCpuInfo())
-            await DataSend.Send(cpuData.Name, cpuData.Value);
-        foreach(var getmacadress in data.GetMacAddress())
-            await DataSend.Send(getmacadress.Name, getmacadress.Value);
-
-        Console.WriteLine("Data sent to MQTT.");
+            Thread.Sleep(60000); // esegue ogni minuto
+        }
     }
 }

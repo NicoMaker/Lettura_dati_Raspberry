@@ -633,29 +633,47 @@ public List<SensorData> GetMacAddress()
 }
 ```
 
-### Implemeentazione ricezione anche del Mac Adress nel proogramm.cs
+
+### Migloramento Program.cs vedendo il risultato nel topic come nome del Mac Adress del Dipositivo e poi il dato
 ```C#
-static async Task DateperMinute(Data data)
+using Lettura_dati_Raspberry;
+using System;
+using System.Runtime.Intrinsics.Arm;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+namespace lettura_dati_Raspberry;
+class Program
 {
-    // invia i dati via MQTT
+    static async Task Main(string[] args)
+    {
+        Data data = new Data();
+        List<SensorData> macs = data.GetMacAddress();
 
-    foreach (var ramData in data.GetRamInfo())
-        await DataSend.Send(ramData.Name, ramData.Value);
+        if (macs.Count == 0) throw new Exception("No MacAddress found");
 
-    foreach (var romData in data.GetRomInfo())
-        await DataSend.Send(romData.Name, romData.Value);
+        Task dataTask = Task.Run(() => DateperMinute(data, macs[0].Value)); // richamo la funzione 
 
-    foreach (var cpuData in data.GetCpuInfo())
-        await DataSend.Send(cpuData.Name, cpuData.Value);
-    foreach(var getmacadress in data.GetMacAddress())
-        await DataSend.Send(getmacadress.Name, getmacadress.Value);
+        while (true)
+            Thread.Sleep(60000); // manda i messaggi al mqtt anche se il programma non è avviato ma la macchina deve essere accesa
 
-    Console.WriteLine("Data sent to MQTT.");
+    }
+
+    static async Task DateperMinute(Data data, string mac)
+    {
+        // invia i dati via MQTT
+        while (true)
+        {
+            foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+                await DataSend.Send($"{mac}/{sensorData.Name}", sensorData.Value);
+
+            Thread.Sleep(60000); // esegue ogni minuto
+        }
+    }
 }
 ```
 
-### visualizzazione Mac Adress
 
-![Ricezione dato del Mac Adress](Immagini/MacAdress.png)
+## visualizzazione dati con Mac Address
+
+![Dati con Mac Address](Immagini/DatiConMacAddress.png)
 
 User And Stakeholders -> chiunque ha l'utilità di monitorare i dati
