@@ -308,7 +308,7 @@ private static string _brokerAddress = "indirizzo server";
 private static int _brokerPort = 1883;
 private static string _username = "nome utente";
 private static string _password = "password";
-private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
+private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V500;
 ```
 
 ### Creo le funzioni che mi servono
@@ -677,3 +677,23 @@ class Program
 ![Dati con Mac Address](Immagini/DatiConMacAddress.png)
 
 User And Stakeholders -> chiunque ha l'utilità di monitorare i dati
+
+### modifica topic con parte anche measures
+
+```C#
+static async Task DateperMinute(Data data, string mac)
+{
+    // invia i dati via MQTT
+    while (true)
+    {
+        foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+            await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData.Value);
+
+        Thread.Sleep(60000); // esegue ogni minuto
+    }
+}
+```
+
+## visualizzazione dati con topic Measures
+
+![Dati con Measures](Immagini/TopicConMeasures.png)

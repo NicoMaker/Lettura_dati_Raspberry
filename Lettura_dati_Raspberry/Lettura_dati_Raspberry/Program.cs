@@ -25,7 +25,7 @@ class Program
         while (true)
         {
             foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
-                await DataSend.Send($"{mac}/{sensorData.Name}", sensorData.Value);
+                await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData.Value);
 
             Thread.Sleep(60000); // esegue ogni minuto
         }

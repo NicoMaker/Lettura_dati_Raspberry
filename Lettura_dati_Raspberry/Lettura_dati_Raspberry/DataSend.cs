@@ -15,7 +15,7 @@ internal class DataSend
     private static int _brokerPort = 1883;
     private static string _username = "nome utente";
     private static string _password = "password";
-    private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V311;
+    private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V500;
 
     private static void _initclient()
     {
