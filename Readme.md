@@ -1,4 +1,4 @@
-# visualizza i dati della RAM, ROM totale Libera e usata e CPU dI Raspberry
+# visualizza i dati della RAM, ROM totale Libera e usata e CPU deI Raspberry
 
 prima parte di configurazione degli using
 
@@ -241,7 +241,7 @@ chmod +x nomefile #do opzione di esecuzione al file
 dotnet run #esegue il codice dotnet
 ```
 
-### Infine programma funzionate alla fine
+### Infine programma funzionante alla fine
 
 ![lettura dati Raspberry](Immagini/Lettura_dati1.png)
 ![lettura dati Raspberry](Immagini/Lettura_dati2.png)
