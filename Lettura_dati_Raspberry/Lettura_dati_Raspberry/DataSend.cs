@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using lettura_dati_Raspberry;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
@@ -46,10 +47,14 @@ internal class DataSend
     {
         await _connectclient();
 
+        SensorData sensorData = new SensorData();
+
 
         var mqttMessage = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
             .WithPayload(message)
+            .WithContentType(sensorData.ContentType)
+            .WithUserProperty("ts", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()) // ottengo tempo di ricezione del messaggio
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
             .Build();
 

@@ -60,138 +60,138 @@ dentro la classe Data creo i vari metodi
 
 - ottieni RAM
 
-```C#
-public string GetRamInfo()
-{
-    try
+    ```C#
+    public string GetRamInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "free",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
+                FileName = "free",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                if (lines.Length >= 2)
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
                 {
-                    string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string output = reader.ReadToEnd();
+                    string[] lines = output.Split('\n');
 
-                    if (values.Length >= 4)
+                    if (lines.Length >= 2)
                     {
-                        ulong totalRam = ulong.Parse(values[1]);
-                        ulong usedRam = ulong.Parse(values[2]);
-                        ulong freeRam = ulong.Parse(values[3]);
+                        string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        // Converti almeno uno dei valori in double per ottenere risultati decimali
-                        double usedRamPercentage = (double)usedRam / totalRam * 100;
-                        double freeRamPercentage = (double)freeRam / totalRam * 100;
+                        if (values.Length >= 4)
+                        {
+                            ulong totalRam = ulong.Parse(values[1]);
+                            ulong usedRam = ulong.Parse(values[2]);
+                            ulong freeRam = ulong.Parse(values[3]);
 
-                        return $"RAM Used: {usedRamPercentage:F2}%, RAM Free: {freeRamPercentage:F2}%, RAM Total: {totalRam} MB";
+                            // Converti almeno uno dei valori in double per ottenere risultati decimali
+                            double usedRamPercentage = (double)usedRam / totalRam * 100;
+                            double freeRamPercentage = (double)freeRam / totalRam * 100;
+
+                            return $"RAM Used: {usedRamPercentage:F2}%, RAM Free: {freeRamPercentage:F2}%, RAM Total: {totalRam} MB";
+                        }
                     }
                 }
             }
-        }
 
-        return "Failed to retrieve RAM information";
+            return "Failed to retrieve RAM information";
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
-    catch (Exception ex)
-    {
-        return $"Error: {ex.Message}";
-    }
-}
-```
+    ```
 
 - Ottieni ROM
 
-```C#
-public string GetRomInfo()
-{
-    try
+    ```C#
+    public string GetRomInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "df",
-            Arguments = "-h /",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
+                FileName = "df",
+                Arguments = "-h /",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                if (lines.Length >= 2)
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
                 {
-                    string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string output = reader.ReadToEnd();
+                    string[] lines = output.Split('\n');
 
-                    if (values.Length >= 6)
+                    if (lines.Length >= 2)
                     {
-                        string totalRomStr = values[1].TrimEnd('G');
-                        string usedRomStr = values[2].TrimEnd('G');
-                        string freeRomStr = values[3].TrimEnd('G');
+                        string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
-                        double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
-                        double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                        if (values.Length >= 6)
+                        {
+                            string totalRomStr = values[1].TrimEnd('G');
+                            string usedRomStr = values[2].TrimEnd('G');
+                            string freeRomStr = values[3].TrimEnd('G');
 
-                        return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom} GB";
+                            double totalRom = double.Parse(totalRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                            double usedRom = double.Parse(usedRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+                            double freeRom = double.Parse(freeRomStr, CultureInfo.InvariantCulture); // Convert GB to MB
+
+                            return $"ROM Used: {(usedRom / totalRom) * 100} %, ROM Free: {(freeRom / totalRom) * 100} %, ROM Total: {totalRom} GB";
+                        }
                     }
                 }
             }
-        }
 
-        return "Failed to retrieve ROM information";
+            return "Failed to retrieve ROM information";
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
-    catch (Exception ex)
-    {
-        return $"Error: {ex.Message}";
-    }
-}
-```
+    ```
 
 - Ottieni Info CPU
 
-```C#
-public string GetCpuInfo()
-{
-    try
+    ```C#
+    public string GetCpuInfo()
     {
-        var processStartInfo = new ProcessStartInfo
+        try
         {
-            FileName = "cat",
-            Arguments = "/proc/cpuinfo",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = Process.Start(processStartInfo))
-        {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                return $"CPU Info:\n{output}";
+                FileName = "cat",
+                Arguments = "/proc/cpuinfo",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    return $"CPU Info:\n{output}";
+                }
             }
         }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
-    catch (Exception ex)
-    {
-        return $"Error: {ex.Message}";
-    }
-}
-```
+    ```
 
 ## ora lo si bilda sul Raspberry
 
@@ -315,55 +315,55 @@ private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V500;
 
 - Per inizializzare il client (\_initclient)
 
-```C#
-private static void _initclient()
-{
-    if (_mqttClient == null)
+    ```C#
+    private static void _initclient()
     {
-        var factory = new MqttFactory();
-        _mqttClient = factory.CreateMqttClient();
+        if (_mqttClient == null)
+        {
+            var factory = new MqttFactory();
+            _mqttClient = factory.CreateMqttClient();
+        }
     }
-}
-```
+    ```
 
 - Per connetersi al Client (\_connectclient)
 
-```C#
-private static async Task _connectclient()
-{
-    _initclient();
-
-    if (!_mqttClient.IsConnected)
+    ```C#
+    private static async Task _connectclient()
     {
-        var options = new MqttClientOptionsBuilder()
-            .WithTcpServer(_brokerAddress, _brokerPort)
-            .WithCredentials(_username, _password)
-            .WithClientId(_clientId)
-            .WithProtocolVersion(_protocolVersion)
-            .Build();
+        _initclient();
 
-        await _mqttClient.ConnectAsync(options);
+        if (!_mqttClient.IsConnected)
+        {
+            var options = new MqttClientOptionsBuilder()
+                .WithTcpServer(_brokerAddress, _brokerPort)
+                .WithCredentials(_username, _password)
+                .WithClientId(_clientId)
+                .WithProtocolVersion(_protocolVersion)
+                .Build();
+
+            await _mqttClient.ConnectAsync(options);
+        }
     }
-}
-```
+    ```
 
 - per inviare i dati nel topic che mi interssa con il messaggio interessato (Send)
 
-```C#
-public static async Task Send(string topic, string message)
-{
-    await _connectclient();
+    ```C#
+    public static async Task Send(string topic, string message)
+    {
+        await _connectclient();
 
 
-    var mqttMessage = new MqttApplicationMessageBuilder()
-        .WithTopic(topic)
-        .WithPayload(message)
-        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
-        .Build();
+        var mqttMessage = new MqttApplicationMessageBuilder()
+            .WithTopic(topic)
+            .WithPayload(message)
+            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
+            .Build();
 
-    await _mqttClient.PublishAsync(mqttMessage);
-}
-```
+        await _mqttClient.PublishAsync(mqttMessage);
+    }
+    ```
 
 Visualizzo l'invio dei dati nei topic cambaindo coosi il programma 
 
@@ -407,134 +407,134 @@ public string Unit { get; set; } = "";
 modifico i vari metodi della classe Data con le impostazioni che mando i dati via MQTT
 
 - funzione GetRamInfo 
-```C#
-public List<SensorData> GetRamInfo()
-{
-    List<SensorData> sensorData = new List<SensorData>();
-
-    try
+    ```C#
+    public List<SensorData> GetRamInfo()
     {
-        var processStartInfo = new ProcessStartInfo
-        {
-            FileName = "free",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+        List<SensorData> sensorData = new List<SensorData>();
 
-        using (var process = Process.Start(processStartInfo))
+        try
         {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
-                string output = reader.ReadToEnd();
-                string[] lines = output.Split('\n');
+                FileName = "free",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                if (lines.Length >= 2)
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
                 {
-                    string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string output = reader.ReadToEnd();
+                    string[] lines = output.Split('\n');
 
-                    if (values.Length >= 4)
+                    if (lines.Length >= 2)
                     {
-                        ulong totalRam = ulong.Parse(values[1]);
-                        ulong usedRam = ulong.Parse(values[2]);
-                        ulong freeRam = ulong.Parse(values[3]);
+                        string[] values = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        // Converti almeno uno dei valori in double per ottenere risultati decimali
-                        double usedRamPercentage = (double)usedRam / totalRam * 100;
-                        double freeRamPercentage = (double)freeRam / totalRam * 100;
+                        if (values.Length >= 4)
+                        {
+                            ulong totalRam = ulong.Parse(values[1]);
+                            ulong usedRam = ulong.Parse(values[2]);
+                            ulong freeRam = ulong.Parse(values[3]);
 
-                        sensorData.Add(
-                            new SensorData // istaznzio già i dati popolandoli con i dati interessati
-                            {
-                                Name = "RAM/Free",
-                                Value = freeRamPercentage.ToString(CultureInfo.InvariantCulture),
-                                Unit = "%"
-                            }
-                         );
+                            // Converti almeno uno dei valori in double per ottenere risultati decimali
+                            double usedRamPercentage = (double)usedRam / totalRam * 100;
+                            double freeRamPercentage = (double)freeRam / totalRam * 100;
 
-                        sensorData.Add(
-                            new SensorData
-                            {
-                                Name = "RAM/Used",
-                                Value = usedRamPercentage.ToString(CultureInfo.InvariantCulture),
-                                Unit = "%"
-                            });
-
-                        sensorData.Add(
-                            new SensorData
-                            {
-                                Name = "RAM/Total",
-                                Value = totalRam.ToString(CultureInfo.InvariantCulture),
-                                Unit = "MB"
-                            }
+                            sensorData.Add(
+                                new SensorData // istaznzio già i dati popolandoli con i dati interessati
+                                {
+                                    Name = "RAM/Free",
+                                    Value = freeRamPercentage.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                }
                             );
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "RAM/Used",
+                                    Value = usedRamPercentage.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "%"
+                                });
+
+                            sensorData.Add(
+                                new SensorData
+                                {
+                                    Name = "RAM/Total",
+                                    Value = totalRam.ToString(CultureInfo.InvariantCulture),
+                                    Unit = "MB"
+                                }
+                                );
+                        }
                     }
                 }
             }
         }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error: {ex.Message}");
-    }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
 
-    return sensorData;
-}
-```
+        return sensorData;
+    }
+    ```
 
 - Funzione GetRomInfo
-```C#
-public List<SensorData> GetCpuInfo()
-{
-    List<SensorData> sensorData = new List<SensorData>();
-
-    try
+    ```C#
+    public List<SensorData> GetCpuInfo()
     {
-        var processStartInfo = new ProcessStartInfo
-        {
-            FileName = "cat",
-            Arguments = "/proc/cpuinfo",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+        List<SensorData> sensorData = new List<SensorData>();
 
-        using (var process = Process.Start(processStartInfo))
+        try
         {
-            using (var reader = process.StandardOutput)
+            var processStartInfo = new ProcessStartInfo
             {
+                FileName = "cat",
+                Arguments = "/proc/cpuinfo",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                while (!reader.EndOfStream)
+            using (var process = Process.Start(processStartInfo))
+            {
+                using (var reader = process.StandardOutput)
                 {
-                    string line = reader.ReadLine();
 
-                    // Split the line into key and value
-                    string[] parts = line.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length == 2)
+                    while (!reader.EndOfStream)
                     {
-                        string key = parts[0].Trim();
-                        string value = parts[1].Trim();
+                        string line = reader.ReadLine();
 
-
-                        sensorData.Add(new SensorData
+                        // Split the line into key and value
+                        string[] parts = line.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length == 2)
                         {
-                            Name = $"CPU/{key}",
-                            Value = value,
-                            Unit = ""
-                        });
+                            string key = parts[0].Trim();
+                            string value = parts[1].Trim();
+
+
+                            sensorData.Add(new SensorData
+                            {
+                                Name = $"CPU/{key}",
+                                Value = value,
+                                Unit = ""
+                            });
+                        }
                     }
                 }
             }
         }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error: {ex.Message}");
-    }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
 
-    return sensorData;
-}
-```
+        return sensorData;
+    }
+    ```
 
 infine mettere dati perchè arrivino ogni minuto i nuovi dati
 ```C#
@@ -587,15 +587,15 @@ per uscire premi invio altrimenti ogni minuto ti manda i messaggi e ti scrive Da
 
 - RAM
 
-![Immagine dati RAM](Immagini/Ram.png)
+    ![Immagine dati RAM](Immagini/Ram.png)
 
 - ROM
 
-![Immagine dati ROM](Immagini/Rom.png)
+    ![Immagine dati ROM](Immagini/Rom.png)
 
 - CPU
 
-![Immagine dati CPU](Immagini/Cpu.png)
+    ![Immagine dati CPU](Immagini/Cpu.png)
 
 ## mplementazione funzione GetMacAdress per ottenere il Mac Address del Raspberry
 ```C#
@@ -697,3 +697,93 @@ static async Task DateperMinute(Data data, string mac)
 ## visualizzazione dati con topic Measures
 
 ![Dati con Measures](Immagini/TopicConMeasures.png)
+
+# Manda dati con Propreties corrette
+
+1)  modifico metodo Send nella classe DataSend
+
+    ```C#
+    public static async Task Send(string topic, string message)
+    {
+        await _connectclient();
+
+        SensorData sensorData = new SensorData();
+
+
+        var mqttMessage = new MqttApplicationMessageBuilder()
+            .WithTopic(topic)
+            .WithPayload(message)
+            .WithContentType(sensorData.ContentType)
+            .WithUserProperty("ts", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()) // ottengo tempo di ricezione del messaggio
+            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
+            .Build();
+
+        await _mqttClient.PublishAsync(mqttMessage);
+    }
+    ```
+
+2) dicharo una variabile sia lettura che scrittura (get set) nella classe SensorData
+
+    ```C#
+    public string ContentType { get; set; } = "";
+    ```
+
+3) infine modifico le varie classi con le impostazioni del tipo ContentType se numeric oppure Text nella classe Data
+
+    - Metodo RAM
+
+        ```C#
+        sensorData.Add(
+            new SensorData // istaznzio già i dati popolandoli con i dati interessati
+            {
+                Name = "ROM/Free",
+                Value = usedrompercentual.ToString(CultureInfo.InvariantCulture),
+                Unit = "%",
+                ContentType = "Numeric"
+            }
+        );
+
+        sensorData.Add(
+            new SensorData
+            {
+                Name = "ROM/Used",
+                Value = freerompercentual.ToString(CultureInfo.InvariantCulture),
+                Unit = "%",
+                ContentType = "Numeric"
+            });
+
+        sensorData.Add(
+            new SensorData
+            {
+                Name = "ROM/Total",
+                Value = totalRom.ToString(CultureInfo.InvariantCulture),
+                Unit = "GB",
+                ContentType = "Numeric"
+            }
+            );
+        ```
+
+    - Metodo ROM
+
+        ```C#
+        sensorData.Add(new SensorData
+        {
+            Name = $"CPU/{key}",
+            Value = value,
+            Unit = "",
+            ContentType = "Text"
+        });
+        ```
+    
+    - Metodo CPU
+
+        ```C#
+        sensorData.Add(new SensorData
+        {
+            Name = $"CPU/{key}",
+            Value = value,
+            Unit = "",
+            ContentType = "Text"
+        });
+        ```
+4) Visualizzazione Propreties

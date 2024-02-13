@@ -54,7 +54,8 @@ class Data
                                 {
                                     Name = "RAM/Free",
                                     Value = freeRamPercentage.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "%"
+                                    Unit = "%",
+                                    ContentType = "Numeric"
                                 }
                              );
 
@@ -63,7 +64,8 @@ class Data
                                 {
                                     Name = "RAM/Used",
                                     Value = usedRamPercentage.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "%"
+                                    Unit = "%",
+                                    ContentType = "Numeric"
                                 });
 
                             sensorData.Add(
@@ -71,7 +73,8 @@ class Data
                                 {
                                     Name = "RAM/Total",
                                     Value = totalRam.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "MB"
+                                    Unit = "MB",
+                                    ContentType = "Numeric"
                                 }
                                 );
                         }
@@ -134,7 +137,8 @@ class Data
                                 {
                                     Name = "ROM/Free",
                                     Value = usedrompercentual.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "%"
+                                    Unit = "%",
+                                    ContentType = "Numeric"
                                 }
                              );
 
@@ -143,7 +147,8 @@ class Data
                                 {
                                     Name = "ROM/Used",
                                     Value = freerompercentual.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "%"
+                                    Unit = "%",
+                                    ContentType = "Numeric"
                                 });
 
                             sensorData.Add(
@@ -151,7 +156,8 @@ class Data
                                 {
                                     Name = "ROM/Total",
                                     Value = totalRom.ToString(CultureInfo.InvariantCulture),
-                                    Unit = "GB"
+                                    Unit = "GB",
+                                    ContentType = "Numeric"
                                 }
                                 );
                         }
@@ -206,7 +212,8 @@ class Data
                             {
                                 Name = $"CPU/{key}",
                                 Value = value,
-                                Unit = ""
+                                Unit = "",
+                                ContentType = "Text"
                             });
                         }
                     }
