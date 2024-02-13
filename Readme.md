@@ -703,18 +703,17 @@ static async Task DateperMinute(Data data, string mac)
 1)  modifico metodo Send nella classe DataSend
 
     ```C#
-    public static async Task Send(string topic, string message)
+    public static async Task Send(string topic,SensorData Sensordata, string ts)
     {
         await _connectclient();
-
-        SensorData sensorData = new SensorData();
 
 
         var mqttMessage = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
-            .WithPayload(message)
-            .WithContentType(sensorData.ContentType)
-            .WithUserProperty("ts", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()) // ottengo tempo di ricezione del messaggio
+            .WithPayload(Sensordata.Value)
+            .WithContentType(Sensordata.ContentType)
+            .WithUserProperty("ts", ts) // ottengo tempo di ricezione del messaggio
+            .WithUserProperty("unit", Sensordata.Unit)
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
             .Build();
 
@@ -786,4 +785,25 @@ static async Task DateperMinute(Data data, string mac)
             ContentType = "Text"
         });
         ```
-4) Visualizzazione Propreties
+
+4) cambio metodo DatePerMinute in program
+```C#
+static async Task DateperMinute(Data data, string mac)
+{
+    // invia i dati via MQTT
+    while (true)
+    {
+        string ts = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+
+        foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+            await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
+
+        Thread.Sleep(60000); // esegue ogni minuto
+    }
+}
+```
+
+5) Visualizzazione Propreties
+
+![Propreties 1](Immagini/Propreties1.png)
+![Propreties 2](Immagini/Propretries2.png)

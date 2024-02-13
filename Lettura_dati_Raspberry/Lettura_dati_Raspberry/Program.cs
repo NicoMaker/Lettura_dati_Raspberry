@@ -24,8 +24,10 @@ class Program
         // invia i dati via MQTT
         while (true)
         {
+            string ts = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+
             foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
-                await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData.Value);
+                await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
 
             Thread.Sleep(60000); // esegue ogni minuto
         }

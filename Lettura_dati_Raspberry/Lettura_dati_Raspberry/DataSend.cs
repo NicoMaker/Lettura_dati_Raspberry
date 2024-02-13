@@ -43,21 +43,21 @@ internal class DataSend
         }
     }
 
-    public static async Task Send(string topic, string message)
+    public static async Task Send(string topic,SensorData Sensordata, string ts)
     {
         await _connectclient();
-
-        SensorData sensorData = new SensorData();
 
 
         var mqttMessage = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
-            .WithPayload(message)
-            .WithContentType(sensorData.ContentType)
-            .WithUserProperty("ts", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()) // ottengo tempo di ricezione del messaggio
+            .WithPayload(Sensordata.Value)
+            .WithContentType(Sensordata.ContentType)
+            .WithUserProperty("ts", ts) // ottengo tempo di ricezione del messaggio
+            .WithUserProperty("unit", Sensordata.Unit)
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)  // Choose the appropriate QoS level
             .Build();
 
         await _mqttClient.PublishAsync(mqttMessage);
     }
 }
+
