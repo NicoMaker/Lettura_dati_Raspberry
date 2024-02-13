@@ -4,7 +4,7 @@ prima parte di configurazione degli using
 
 - Management
 
-![scaricamneto Nuget](Immagini/Scaricamento_nuget.png)
+    ![scaricamneto Nuget](Immagini/Scaricamento_nuget.png)
 
 intanto parte di configurazione degli using e namespace
 
@@ -787,23 +787,24 @@ static async Task DateperMinute(Data data, string mac)
         ```
 
 4) cambio metodo DatePerMinute in program
-```C#
-static async Task DateperMinute(Data data, string mac)
-{
-    // invia i dati via MQTT
-    while (true)
+    ```C#
+    static async Task DateperMinute(Data data, string mac)
     {
-        string ts = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+        // invia i dati via MQTT
+        while (true)
+        {
+            string ts = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
-        foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
-            await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
+            foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+                await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
 
-        Thread.Sleep(60000); // esegue ogni minuto
+            Thread.Sleep(60000); // esegue ogni minuto
+        }
     }
-}
-```
+    ```
 
 5) Visualizzazione Propreties
 
-![Propreties 1](Immagini/Propreties1.png)
-![Propreties 2](Immagini/Propretries2.png)
+    ![Propreties 1](Immagini/Propreties1.png)
+    ![Propreties 2](Immagini/Propretries2.png)
+
