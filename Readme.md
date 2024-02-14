@@ -847,3 +847,33 @@ static async Task DateperMinute(Data data, string mac)
         ```
 
 2) Visualizzazione dati nella piattaforma
+
+    - Immagiine dove vedi in generale i dispositivi che ci sono nella piattaforma e se sono online o offline
+
+        ![Movens Hub Generale](Immagini/MovensHubGenerale.png)
+
+        clicchi sul device che ti interessa 
+
+    
+    - Visualizzazione immagine dove vedi le info del Raspberry 
+
+        ![Movens Hub info](Immagini/MovensHubInfo.png)
+
+        per viusalizzare tutte le informazioni sui vari dati clicchi su All Measures
+
+    - Visualizzazzione Dati
+
+        1) Vedo dati del sistema
+
+            ![Movens Hub Dati Sistema](Immagini/MovensHubDatiSistema.png)
+
+            nomeclatura dati
+            - EC -> nome del dispositivo interessato
+            - SN -> Mac Address del dipositivo interessato
+            - uptime -> vedo se il sipositivo è online oppure offline
+
+        2) Vedo dati della RAM
+
+            ![Movens Hub Dati RAM](Immagini/MovensHubDatiRAM.png)
+
+            Visualizzo i dati della RAM libera usaata e totale come lo si può vedere nel grafico riportato sopra
