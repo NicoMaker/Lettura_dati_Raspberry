@@ -681,8 +681,6 @@ class Program
 
 ![Dati con Mac Address](Immagini/DatiConMacAddress.png)
 
-User And Stakeholders -> chiunque ha l'utilità di monitorare i dati
-
 ### modifica topic con parte anche measures
 
 ```C#
@@ -897,3 +895,7 @@ static async Task DateperMinute(Data data, string mac)
             ![Movens Hub Dati CPU 2](Immagini/MovensHubDatiCPU2.png)
 
             Qui vedo i vari dati delle informazioni della CPU
+
+# User And Stakeholders
+
+chiunque ha l'utilità di monitorare i dati
