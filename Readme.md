@@ -893,7 +893,7 @@ static async Task DateperMinute(Data data, string mac)
 
         4) Vedo i dati della CPU
 
-            ![Movens Hub Dati CPU 1](Immagini/MovensHubDatiCPU1.png)
+            ![Movens Hub Dati CPU 1](Immagini/MovensHubDatiCpu1.png)
             ![Movens Hub Dati CPU 2](Immagini/MovensHubDatiCPU2.png)
 
             Qui vedo i vari dati delle informazioni della CPU
