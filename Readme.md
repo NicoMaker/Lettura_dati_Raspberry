@@ -808,3 +808,42 @@ static async Task DateperMinute(Data data, string mac)
     ![Propreties 1](Immagini/Propreties1.png)
     ![Propreties 2](Immagini/Propretries2.png)
 
+# Abilito dati per utilizzo Movens-Hub
+
+1) Mdifico codice nel Program  nella funzione DateperMinute
+
+    - implemento il seguente codice 
+
+        ```C#
+        SensorData sensordata  = new SensorData();
+
+        //  dati  System/SN
+        sensordata.Name = "System/SN";
+        sensordata.Value = mac;
+        sensordata.ContentType = "Text";
+
+        await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
+        Thread.Sleep(1000);
+
+
+        // dati System/EC
+        sensordata.Name = "System/EC";
+        sensordata.Value = "RPI4"; // decido di che tipo è
+        sensordata.ContentType = "Text";
+
+        await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
+
+
+        // dati System/uptime
+        sensordata.Name = "System/uptime";
+        sensordata.Value = "Online";
+        sensordata.ContentType = "Text";
+        ```
+
+    -  e invece dentro la ciclo while implemento perchè cosi il dato online lo vedo sempre quando è attivo il Raspberry
+
+        ```C#
+        await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, ts);
+        ```
+
+2) Visualizzazione dati nella piattaforma
