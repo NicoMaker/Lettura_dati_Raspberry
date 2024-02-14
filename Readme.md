@@ -365,7 +365,7 @@ private static MqttProtocolVersion _protocolVersion = MqttProtocolVersion.V500;
     }
     ```
 
-Visualizzo l'invio dei dati nei topic cambaindo coosi il programma 
+Visualizzo l'invio dei dati nei topic cambaindo coosi il programma
 
 ```C#
 static async Task Main(string[] args)
@@ -391,6 +391,7 @@ static async Task Main(string[] args)
 ```
 
 creo una classe SensorData dove ottengo i vari tipi di dati da mandare via MQTT
+
 ```C#
 internal class SensorData{
     // codice 
@@ -398,6 +399,7 @@ internal class SensorData{
 ```
 
 creo i vari attributi della classe SensorData
+
 ```C#
 public string Name { get; set; } = "";
 public string Value { get; set; } = "";
@@ -406,7 +408,8 @@ public string Unit { get; set; } = "";
 
 modifico i vari metodi della classe Data con le impostazioni che mando i dati via MQTT
 
-- funzione GetRamInfo 
+- funzione GetRamInfo
+
     ```C#
     public List<SensorData> GetRamInfo()
     {
@@ -483,6 +486,7 @@ modifico i vari metodi della classe Data con le impostazioni che mando i dati vi
     ```
 
 - Funzione GetRomInfo
+
     ```C#
     public List<SensorData> GetCpuInfo()
     {
@@ -537,6 +541,7 @@ modifico i vari metodi della classe Data con le impostazioni che mando i dati vi
     ```
 
 infine mettere dati perchè arrivino ogni minuto i nuovi dati
+
 ```C#
 class Program
 {
@@ -598,6 +603,7 @@ per uscire premi invio altrimenti ogni minuto ti manda i messaggi e ti scrive Da
     ![Immagine dati CPU](Immagini/Cpu.png)
 
 ## mplementazione funzione GetMacAdress per ottenere il Mac Address del Raspberry
+
 ```C#
 public List<SensorData> GetMacAddress()
 {
@@ -633,8 +639,8 @@ public List<SensorData> GetMacAddress()
 }
 ```
 
-
 ### Migloramento Program.cs vedendo il risultato nel topic come nome del Mac Adress del Dipositivo e poi il dato
+
 ```C#
 using Lettura_dati_Raspberry;
 using System;
@@ -671,7 +677,6 @@ class Program
 }
 ```
 
-
 ## visualizzazione dati con Mac Address
 
 ![Dati con Mac Address](Immagini/DatiConMacAddress.png)
@@ -700,7 +705,7 @@ static async Task DateperMinute(Data data, string mac)
 
 # Manda dati con Propreties corrette
 
-1)  modifico metodo Send nella classe DataSend
+1) modifico metodo Send nella classe DataSend
 
     ```C#
     public static async Task Send(string topic,SensorData Sensordata, string ts)
@@ -773,7 +778,7 @@ static async Task DateperMinute(Data data, string mac)
             ContentType = "Text"
         });
         ```
-    
+
     - Metodo CPU
 
         ```C#
@@ -787,6 +792,7 @@ static async Task DateperMinute(Data data, string mac)
         ```
 
 4) cambio metodo DatePerMinute in program
+
     ```C#
     static async Task DateperMinute(Data data, string mac)
     {
@@ -812,7 +818,7 @@ static async Task DateperMinute(Data data, string mac)
 
 1) Mdifico codice nel Program  nella funzione DateperMinute
 
-    - implemento il seguente codice 
+    - implemento il seguente codice
 
         ```C#
         SensorData sensordata  = new SensorData();
@@ -840,7 +846,7 @@ static async Task DateperMinute(Data data, string mac)
         sensordata.ContentType = "Text";
         ```
 
-    -  e invece dentro la ciclo while implemento perchè cosi il dato online lo vedo sempre quando è attivo il Raspberry
+    - e invece dentro la ciclo while implemento perchè cosi il dato online lo vedo sempre quando è attivo il Raspberry
 
         ```C#
         await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, ts);
@@ -848,14 +854,15 @@ static async Task DateperMinute(Data data, string mac)
 
 2) Visualizzazione dati nella piattaforma
 
+    I Dati vengono mandati ogni minuto
+
     - Immagiine dove vedi in generale i dispositivi che ci sono nella piattaforma e se sono online o offline
 
         ![Movens Hub Generale](Immagini/MovensHubGenerale.png)
 
-        clicchi sul device che ti interessa 
+        clicchi sul device che ti interessa
 
-    
-    - Visualizzazione immagine dove vedi le info del Raspberry 
+    - Visualizzazione immagine dove vedi le info del Raspberry
 
         ![Movens Hub info](Immagini/MovensHubInfo.png)
 
@@ -876,4 +883,17 @@ static async Task DateperMinute(Data data, string mac)
 
             ![Movens Hub Dati RAM](Immagini/MovensHubDatiRAM.png)
 
-            Visualizzo i dati della RAM libera usaata e totale come lo si può vedere nel grafico riportato sopra
+            Visualizzo i dati della RAM libera usata e totale come lo si può vedere nel grafico riportato sopra
+
+        3) Vedo i dati della ROM
+
+            ![Movens Hub Dati ROM](Immagini/MovensHubDatiROM.png)
+
+            Visualizzo i dati della ROM libera usata e totale come lo si può vedere nel grafico riportato sopra
+
+        4) Vedo i dati della CPU
+
+            ![Movens Hub Dati CPU 1](Immagini/MovensHubDatiCPU1.png)
+            ![Movens Hub Dati CPU 2](Immagini/MovensHubDatiCPU2.png)
+
+            Qui vedo i vari dati delle informazioni della CPU
