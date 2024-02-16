@@ -896,6 +896,85 @@ static async Task DateperMinute(Data data, string mac)
 
             Qui vedo i vari dati delle informazioni della CPU
 
+# Implementazione Lettura Dati Seriali
+
+1) come prima cosa bisogna implemntare il valore nel csproj
+
+    ```xml
+    <ItemGroup>
+        <PackageReference Include="System.IO.Ports" Version="5.0.0" />
+    </ItemGroup>
+    ```
+
+2) modifico la classe data
+
+    - Aggiungo system di riferimento
+
+       ```C#
+       using System.IO.Ports;
+       ```
+
+    - Creo Funzione dove leggere i dati (ReadSerialData)
+
+        ```C#
+        public List<SensorData> ReadSerialData()
+        {
+            List<SensorData> sensorData = new List<SensorData>();
+            string portName = "/dev/ttyS0"; // Imposta il nome della porta seriale
+            int baudRate = 9600; // Imposta il baud rate
+
+            try
+            {
+                using (SerialPort serialPort = new SerialPort(portName, baudRate))
+                {
+                    serialPort.Open();
+
+                    // Leggi tutti i dati disponibili dalla porta seriale
+                    string serialData = serialPort.ReadExisting();
+
+                    // Esempio di parsing dei dati seriali
+                    // Supponiamo che i dati seriali siano nel formato "name:value;unit;content_type"
+                    string[] dataParts = serialData.Split(':');
+                    if (dataParts.Length == 3)
+                    {
+                        string valueUnitContent = dataParts[1];
+                        string[] valueUnitContentParts = valueUnitContent.Split(';');
+                        if (valueUnitContentParts.Length == 3)
+                        {
+                            string value = valueUnitContentParts[0];
+                            string unit = valueUnitContentParts[1];
+
+                            sensorData.Add(new SensorData
+                            {
+                                Name = "SerialData",
+                                Value = value,
+                                Unit = unit,
+                                ContentType = "bool"
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            return sensorData;
+        }
+
+        ```
+
+3) Modifico Program dentro il while della funzione DatePerMinute
+
+```C#
+foreach (SensorData sensorData in data.GetRamInfo()
+    .Concat(data.GetRomInfo())
+    .Concat(data.GetCpuInfo())
+    .Concat(data.ReadSerialData()))
+    await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
+```
+
 # User And Stakeholders
 
 chiunque ha l'utilità di monitorare i dati

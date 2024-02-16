@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace lettura_dati_Raspberry;
+
 class Program
 {
     static async Task Main(string[] args)
@@ -22,7 +23,7 @@ class Program
 
     static async Task DateperMinute(Data data, string mac)
     {
-        SensorData sensordata  = new SensorData();
+        SensorData sensordata = new SensorData();
 
         //  dati  System/SN
         sensordata.Name = "System/SN";
@@ -40,7 +41,7 @@ class Program
 
         await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString());
 
-        
+
         // dati System/uptime
         sensordata.Name = "System/uptime";
         sensordata.Value = "Online";
@@ -53,7 +54,10 @@ class Program
             string ts = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             await DataSend.Send($"measures/@{mac}/{sensordata.Name}", sensordata, ts);
 
-            foreach (SensorData sensorData in data.GetRamInfo().Concat(data.GetRomInfo()).Concat(data.GetCpuInfo()))
+            foreach (SensorData sensorData in data.GetRamInfo()
+                .Concat(data.GetRomInfo())
+                .Concat(data.GetCpuInfo())
+                .Concat(data.ReadSerialData()))
                 await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
 
             Thread.Sleep(60000); // esegue ogni minuto
