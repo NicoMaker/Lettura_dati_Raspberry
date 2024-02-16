@@ -975,7 +975,7 @@ static async Task DateperMinute(Data data, string mac)
         await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
     ```
 
-4) installare dotnet per Root
+4) installare dotnet per Root in Raspberry
 
 ```bash
 sudo su
