@@ -967,12 +967,27 @@ static async Task DateperMinute(Data data, string mac)
 
 3) Modifico Program dentro il while della funzione DatePerMinute
 
-```C#
-foreach (SensorData sensorData in data.GetRamInfo()
-    .Concat(data.GetRomInfo())
-    .Concat(data.GetCpuInfo())
-    .Concat(data.ReadSerialData()))
-    await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
+    ```C#
+    foreach (SensorData sensorData in data.GetRamInfo()
+        .Concat(data.GetRomInfo())
+        .Concat(data.GetCpuInfo())
+        .Concat(data.ReadSerialData()))
+        await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
+    ```
+
+4) installare dotnet per Root
+
+```bash
+sudo su
+sudo apt update
+sudo apt upgrade
+sudo dpkg --add-architecture arm64
+sudo apt update
+wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/{VERSION}/dotnet-sdk-{VERSION}-linux-arm64.tar.gz
+sudo mkdir -p /usr/share/dotnet
+sudo tar -C /usr/share/dotnet -xvf dotnet.tar.gz
+sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+dotnet --version
 ```
 
 # User And Stakeholders
