@@ -736,6 +736,39 @@ static async Task DateperMinute(Data data, string mac)
 
         ```C#
         sensorData.Add(
+        new SensorData // istaznzio già i dati popolandoli con i dati interessati
+        {
+            Name = "RAM/Free",
+            Value = freeRamPercentage.ToString(CultureInfo.InvariantCulture),
+            Unit = "%",
+            ContentType = "Numeric"
+        }
+        );
+
+    sensorData.Add(
+        new SensorData
+        {
+            Name = "RAM/Used",
+            Value = usedRamPercentage.ToString(CultureInfo.InvariantCulture),
+            Unit = "%",
+            ContentType = "Numeric"
+        });
+
+    sensorData.Add(
+        new SensorData
+        {
+            Name = "RAM/Total",
+            Value = totalRam.ToString(CultureInfo.InvariantCulture),
+            Unit = "MB",
+            ContentType = "Numeric"
+        }
+        );
+        ```
+
+    - Metodo ROM
+
+        ```C#
+        sensorData.Add(
             new SensorData // istaznzio già i dati popolandoli con i dati interessati
             {
                 Name = "ROM/Free",
@@ -763,18 +796,6 @@ static async Task DateperMinute(Data data, string mac)
                 ContentType = "Numeric"
             }
             );
-        ```
-
-    - Metodo ROM
-
-        ```C#
-        sensorData.Add(new SensorData
-        {
-            Name = $"CPU/{key}",
-            Value = value,
-            Unit = "",
-            ContentType = "Text"
-        });
         ```
 
     - Metodo CPU
