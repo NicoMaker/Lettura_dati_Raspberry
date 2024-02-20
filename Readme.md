@@ -917,9 +917,9 @@ static async Task DateperMinute(Data data, string mac)
 
             Qui vedo i vari dati delle informazioni della CPU
 
-# Implementazione Lettura Dati Seriali
+# Implementazione Entarte e Uscite digitali
 
-1) Scarico paccheto per usare GpioAO
+1) Scarico paccheto per usare GPIO
 
 ```bash
 dotnet add package System.Device.Gpio
@@ -934,6 +934,19 @@ dotnet add package System.Device.Gpio
         using System.Device.Gpio;
        ```
 
+    - Crei oggetti e costruttore della classe Data
+
+        ```C#
+        private GpioController gpioController;
+        private int numberOfPins;
+
+        public Data()
+        {
+            gpioController = new GpioController();
+            numberOfPins = gpioController.PinCount; // trovo quanti pin di entrate e uscite digitali hai il raspberry
+        }
+        ```
+
     - Creo Funzione dove leggere i dati (ReadSerialData)
 
         ```C#
@@ -941,22 +954,33 @@ dotnet add package System.Device.Gpio
         {
             List<SensorData> sensorData = new List<SensorData>();
 
-            var pin = gpioController.OpenPin(5);
-            pin.SetPinMode(PinMode.Input);
-            var pinValue = pin.Read();
+            try
+            { 
+                for (int i = 0; i < numberOfPins; i++)
+                {
+                    var pin = gpioController.OpenPin(i, PinMode.Input);
+                    var pinValue = pin.Read();
+                    gpioController.ClosePin(i);
 
-            gpioController.ClosePin(5);
-
-            sensorData.Add(new SensorData
+                    sensorData.Add(new SensorData
+                    {
+                        Name = $"GPIO/pin{i}",
+                        Value = (pinValue == PinValue.High) ? "True" : "False",
+                        ContentType = "Bool"
+                    });
+                }
+            }
+            catch (Exception ex)
             {
-                Name = "GPIO/Pin5",
-                Value = $"{pinValue == PinValue.High}",
-                Unit = "",
-                ContentType = "Bool"
-            });
+                Console.WriteLine($"Errore durante la lettura dei dati del sensore: {ex.Message}");
+            }
+            finally
+            {
+                gpioController.Dispose();
+            }
 
             return sensorData;
-        }
+        } 
         ```
 
 3) Modifico Program dentro il while della funzione DatePerMinute
@@ -971,7 +995,21 @@ dotnet add package System.Device.Gpio
 
 4) Vedo dati arrivare
 
-non è possibile visualizzre i dati della lettura seriali
+    ci sono 27 pin di entrate e uscite digitali
+
+    - Su MQTT 5 Explorer
+
+        - Visione dATI
+
+            ![Vedere i dati di GPIO in MQTT Explorer 5](Immagini/ViewGPIO.png)
+
+        - Propreties
+
+            ![Vedere i dati di GPIO in MQTT Explorer 5 Propreties](Immagini/ViewGPIOProprreties.png)
+
+    - Su Movens-Hub
+
+        ![Vedere i dati di GPIO in Movens-Hub](Immagini/ViewGPIOMovens_Hub.png)
 
 # User And Stakeholders
 

@@ -17,7 +17,14 @@ namespace lettura_dati_Raspberry;
 
 class Data
 {
-    private GpioController gpioController = new GpioController();
+    private GpioController gpioController;
+    private int numberOfPins;
+
+    public Data()
+    {
+        gpioController = new GpioController();
+        numberOfPins = gpioController.PinCount;
+    }
 
     public List<SensorData> GetRamInfo()
     {
@@ -271,21 +278,33 @@ class Data
     {
         List<SensorData> sensorData = new List<SensorData>();
 
-        var pin = gpioController.OpenPin(5);
-        pin.SetPinMode(PinMode.Input);
-        var pinValue = pin.Read();
+        try
+        { 
+            for (int i = 0; i < numberOfPins; i++)
+            {
+                var pin = gpioController.OpenPin(i, PinMode.Input);
+                var pinValue = pin.Read();
+                gpioController.ClosePin(i);
 
-        gpioController.ClosePin(5);
-
-        sensorData.Add(new SensorData
+                sensorData.Add(new SensorData
+                {
+                    Name = $"GPIO/pin{i}",
+                    Value = (pinValue == PinValue.High) ? "True" : "False",
+                    ContentType = "Bool"
+                });
+            }
+        }
+        catch (Exception ex)
         {
-            Name = "GPIO/Pin5",
-            Value = $"{pinValue == PinValue.High}",
-            Unit = "",
-            ContentType = "Bool"
-        });
+            Console.WriteLine($"Errore durante la lettura dei dati del sensore: {ex.Message}");
+        }
+        finally
+        {
+            gpioController.Dispose();
+        }
 
         return sensorData;
     }
+
 }
 
