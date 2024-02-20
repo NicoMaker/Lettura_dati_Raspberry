@@ -925,7 +925,11 @@ static async Task DateperMinute(Data data, string mac)
 dotnet add package System.Device.Gpio
 ```
 
-2) modifico la classe data
+2) Scaricare pacchetto Nuget System.Device.Gpio per lavorare in visual studio comunity
+    ![Nuget System.Device.Gpio](Immagini/System.Device.Gpio.png)
+
+
+3) modifico la classe data
 
     - Aggiungo system di riferimento
 
@@ -983,7 +987,7 @@ dotnet add package System.Device.Gpio
         } 
         ```
 
-3) Modifico Program dentro il while della funzione DatePerMinute
+4) Modifico Program dentro il while della funzione DatePerMinute
 
     ```C#
     foreach (SensorData sensorData in data.GetRamInfo()
@@ -993,7 +997,7 @@ dotnet add package System.Device.Gpio
         await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
     ```
 
-4) Vedo dati arrivare
+5) Vedo dati arrivare
 
     ci sono 27 pin di entrate e uscite digitali
 
