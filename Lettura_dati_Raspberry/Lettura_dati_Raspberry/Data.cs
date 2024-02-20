@@ -10,11 +10,15 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
 using System.IO.Ports;
+using System.Device.Gpio;
+using System.Net.Mail;
 
 namespace lettura_dati_Raspberry;
 
 class Data
 {
+    private GpioController gpioController = new GpioController();
+
     public List<SensorData> GetRamInfo()
     {
         List<SensorData> sensorData = new List<SensorData>();
@@ -247,7 +251,7 @@ class Data
 
                     sensorData.Add(new SensorData
                     {
-                        Name ="MAC ADDRESS",
+                        Name = "MAC ADDRESS",
                         Value = macAddress,
                         Unit = ""
                     });
@@ -262,50 +266,26 @@ class Data
         return sensorData;
     }
 
+
     public List<SensorData> ReadSerialData()
     {
         List<SensorData> sensorData = new List<SensorData>();
-        string portName = "/dev/ttyS0"; // Imposta il nome della porta seriale
-        int baudRate = 9600; // Imposta il baud rate
 
-        try
+        var pin = gpioController.OpenPin(5);
+        pin.SetPinMode(PinMode.Input);
+        var pinValue = pin.Read();
+
+        gpioController.ClosePin(5);
+
+        sensorData.Add(new SensorData
         {
-            using (SerialPort serialPort = new SerialPort(portName, baudRate))
-            {
-                serialPort.Open();
-
-                // Leggi tutti i dati disponibili dalla porta seriale
-                string serialData = serialPort.ReadExisting();
-
-                // Esempio di parsing dei dati seriali
-                // Supponiamo che i dati seriali siano nel formato "name:value;unit;content_type"
-                string[] dataParts = serialData.Split(':');
-                if (dataParts.Length == 3)
-                {
-                    string valueUnitContent = dataParts[1];
-                    string[] valueUnitContentParts = valueUnitContent.Split(';');
-                    if (valueUnitContentParts.Length == 3)
-                    {
-                        string value = valueUnitContentParts[0];
-                        string unit = valueUnitContentParts[1];
-
-                        sensorData.Add(new SensorData
-                        {
-                            Name = "SerialData",
-                            Value = value,
-                            Unit = unit,
-                            ContentType = "bool"
-                        });
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
+            Name = "GPIO/Pin5",
+            Value = $"{pinValue == PinValue.High}",
+            Unit = "",
+            ContentType = "Bool"
+        });
 
         return sensorData;
     }
-
 }
+

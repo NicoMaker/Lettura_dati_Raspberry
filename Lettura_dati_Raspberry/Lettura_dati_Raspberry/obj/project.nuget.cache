@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "4kwYPg7bROSqotEBTYvuz661tLavFET9HW4gHlUdulXdSmdgaW0duYxQk5NmllyAGCzXWW3IOIITEHV3j66iTA==",
+  "dgSpecHash": "uZ4LZFc4nrv6xg0IEgYWdNENxhy0b3mZ8/9LsG3A1t/X9/pxxcjTamNbtd730k41FOO/fGSRs/LZKwvV3skqGw==",
   "success": true,
   "projectFilePath": "E:\\Corso ITS IIOT\\2 anno\\Stage\\Attività\\2_Attività\\Lettura Dati\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry\\Lettura_dati_Raspberry.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nicol\\.nuget\\packages\\mqttnet\\4.3.3.952\\mqttnet.4.3.3.952.nupkg.sha512",
     "C:\\Users\\nicol\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
+    "C:\\Users\\nicol\\.nuget\\packages\\system.device.gpio\\3.1.0\\system.device.gpio.3.1.0.nupkg.sha512",
     "C:\\Users\\nicol\\.nuget\\packages\\system.management\\7.0.0\\system.management.7.0.0.nupkg.sha512"
   ],
   "logs": []

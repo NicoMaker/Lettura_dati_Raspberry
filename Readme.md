@@ -919,20 +919,19 @@ static async Task DateperMinute(Data data, string mac)
 
 # Implementazione Lettura Dati Seriali
 
-1) come prima cosa bisogna implemntare il valore nel csproj
+1) Scarico paccheto per usare GpioAO
 
-    ```xml
-    <ItemGroup>
-        <PackageReference Include="System.IO.Ports" Version="5.0.0" />
-    </ItemGroup>
-    ```
+```bash
+dotnet add package System.Device.Gpio
+```
 
 2) modifico la classe data
 
     - Aggiungo system di riferimento
 
        ```C#
-       using System.IO.Ports;
+        using System.IO.Ports;
+        using System.Device.Gpio;
        ```
 
     - Creo Funzione dove leggere i dati (ReadSerialData)
@@ -941,49 +940,23 @@ static async Task DateperMinute(Data data, string mac)
         public List<SensorData> ReadSerialData()
         {
             List<SensorData> sensorData = new List<SensorData>();
-            string portName = "/dev/ttyS0"; // Imposta il nome della porta seriale
-            int baudRate = 9600; // Imposta il baud rate
 
-            try
+            var pin = gpioController.OpenPin(5);
+            pin.SetPinMode(PinMode.Input);
+            var pinValue = pin.Read();
+
+            gpioController.ClosePin(5);
+
+            sensorData.Add(new SensorData
             {
-                using (SerialPort serialPort = new SerialPort(portName, baudRate))
-                {
-                    serialPort.Open();
-
-                    // Leggi tutti i dati disponibili dalla porta seriale
-                    string serialData = serialPort.ReadExisting();
-
-                    // Esempio di parsing dei dati seriali
-                    // Supponiamo che i dati seriali siano nel formato "name:value;unit;content_type"
-                    string[] dataParts = serialData.Split(':');
-                    if (dataParts.Length == 3)
-                    {
-                        string valueUnitContent = dataParts[1];
-                        string[] valueUnitContentParts = valueUnitContent.Split(';');
-                        if (valueUnitContentParts.Length == 3)
-                        {
-                            string value = valueUnitContentParts[0];
-                            string unit = valueUnitContentParts[1];
-
-                            sensorData.Add(new SensorData
-                            {
-                                Name = "SerialData",
-                                Value = value,
-                                Unit = unit,
-                                ContentType = "bool"
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+                Name = "GPIO/Pin5",
+                Value = $"{pinValue == PinValue.High}",
+                Unit = "",
+                ContentType = "Bool"
+            });
 
             return sensorData;
         }
-
         ```
 
 3) Modifico Program dentro il while della funzione DatePerMinute
@@ -996,20 +969,9 @@ static async Task DateperMinute(Data data, string mac)
         await DataSend.Send($"measures/@{mac}/{sensorData.Name}", sensorData, ts);
     ```
 
-4) installare dotnet per Root in Raspberry
+4) Vedo dati arrivare
 
-```bash
-sudo su
-sudo apt update
-sudo apt upgrade
-sudo dpkg --add-architecture arm64
-sudo apt update
-wget -O dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/{VERSION}/dotnet-sdk-{VERSION}-linux-arm64.tar.gz
-sudo mkdir -p /usr/share/dotnet
-sudo tar -C /usr/share/dotnet -xvf dotnet.tar.gz
-sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
-dotnet --version
-```
+non è possibile visualizzre i dati della lettura seriali
 
 # User And Stakeholders
 
