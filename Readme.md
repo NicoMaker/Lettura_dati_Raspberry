@@ -917,7 +917,7 @@ static async Task DateperMinute(Data data, string mac)
 
             Qui vedo i vari dati delle informazioni della CPU
 
-# Implementazione Entarte e Uscite digitali
+# Implementazione Entrate e Uscite digitali
 
 1) Scarico paccheto per usare GPIO
 
